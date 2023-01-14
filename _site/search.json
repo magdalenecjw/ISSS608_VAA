@@ -40,5 +40,12 @@
     "title": "Hands-on Exercise 1",
     "section": "Makeover design",
     "text": "Makeover design\n\npacman::p_load(forcats)\n\nexam_data %>%\n  mutate(RACE = fct_infreq(RACE)) %>%\n  ggplot(aes(x=RACE)) +\n  geom_bar() + \n  ylim(0,225) + \n  geom_text(\n    stat = \"count\",\n    aes(label=paste0(after_stat(count),\", \",\n                     round(after_stat(count)/sum(after_stat(count))*100,\n                           1),\"%\")),\n                      vjust=-1,\n                      size=3) +\n  xlab(\"Race\") +\n  ylab(\"No. of\\nPupils\") +\n  theme(axis.title.y = element_text(angle=0))\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=MATHS)) +\n  geom_histogram(bins = 20, \n                 color = \"black\", \n                 fill = \"light blue\") + \n  geom_vline(aes(xintercept = mean(MATHS)),\n             linetype = \"dashed\",\n             color = 'red') +\n  geom_vline(aes(xintercept = median(MATHS)),\n             linetype = \"dashed\",\n             color = 'black')\n\n\n\n\n\neng_bg <- exam_data[,-3]\n\nggplot(data=exam_data, \n       aes(x=ENGLISH, fill=GENDER)) +\n  geom_histogram(data = eng_bg, fill = \"grey\") +\n  geom_histogram(color = \"black\") +\n  facet_wrap(~GENDER) +\n  ylim(0,30)\n\n`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.\n`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.\n\n\n\n\n\n\nggplot(data=exam_data, \n       aes(x=MATHS, y=ENGLISH)) +\n  geom_point(size=1) +\n  xlim(0,105) +\n  ylim(0,105) +\n  geom_vline(aes(xintercept = 50),\n             linetype = \"dashed\",\n             color = 'grey') +\n  geom_hline(aes(yintercept = 50),\n             linetype = \"dashed\",\n             color = 'grey')"
+  },
+  {
+    "objectID": "Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html",
+    "href": "Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html",
+    "title": "Hands-on Exercise 2",
+    "section": "",
+    "text": "ggplot(data = exam_data,\n       aes(x = MATHS, y = ENGLISH)) + \n  geom_point()"
   }
 ]

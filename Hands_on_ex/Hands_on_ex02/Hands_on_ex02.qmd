@@ -1,0 +1,11 @@
+---
+title: "Hands-on Exercise 2"
+author: "Magdalene Chan"
+---
+
+```{r}
+#| echo: false
+pacman::p_load(tidyverse)
+exam_data <- read_csv("data/Exam_data.csv", show_col_types = FALSE)
+```
+
