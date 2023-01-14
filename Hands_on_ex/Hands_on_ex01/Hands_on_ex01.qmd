@@ -26,3 +26,125 @@ ggplot(data = exam_data,
        aes(x = RACE)) + 
   geom_bar()
 ```
+
+# Working with facets
+
+## Ploting trellis boxplots
+
+```{r}
+ggplot(data = exam_data,
+       aes(x = CLASS, y = MATHS)) + 
+  geom_boxplot(outlier.colour="black",
+               outlier.shape=16,
+               outlier.size=1, 
+               notch=FALSE) + 
+  facet_grid(cols = vars(GENDER))
+```
+
+```{r}
+ggplot(data = exam_data,
+       aes(x = CLASS, y = MATHS)) + 
+  geom_boxplot(outlier.colour="black",
+               outlier.shape=16,
+               outlier.size=1, 
+               notch=FALSE) + 
+  facet_grid(rows = vars(GENDER))
+```
+
+```{r}
+ggplot(data = exam_data,
+       aes(x = GENDER, y = MATHS)) + 
+  geom_boxplot(outlier.colour="black",
+               outlier.shape=16,
+               outlier.size=1, 
+               notch=FALSE) + 
+  facet_grid(cols = vars(CLASS),
+             rows = vars(GENDER))
+```
+
+# Working with themes
+
+## Ploting horizontal bar chart
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal() +
+  theme(panel.background = element_rect(fill = "light blue",
+                                        colour = "light blue"),
+        panel.grid.major = element_line(linewidth = 0.5,
+                                        linetype = 'solid',
+                                        colour = "white"),
+        panel.grid.minor = element_line(linewidth = 0.25,
+                                        linetype = 'solid',
+                                        colour = "white"))
+```
+
+# Designing Data-drive Graphics for Analysis
+
+## Makeover design
+
+```{r}
+pacman::p_load(forcats)
+
+exam_data %>%
+  mutate(RACE = fct_infreq(RACE)) %>%
+  ggplot(aes(x=RACE)) +
+  geom_bar() + 
+  ylim(0,225) + 
+  geom_text(
+    stat = "count",
+    aes(label=paste0(after_stat(count),", ",
+                     round(after_stat(count)/sum(after_stat(count))*100,
+                           1),"%")),
+                      vjust=-1,
+                      size=3) +
+  xlab("Race") +
+  ylab("No. of\nPupils") +
+  theme(axis.title.y = element_text(angle=0))
+
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=MATHS)) +
+  geom_histogram(bins = 20, 
+                 color = "black", 
+                 fill = "light blue") + 
+  geom_vline(aes(xintercept = mean(MATHS)),
+             linetype = "dashed",
+             color = 'red') +
+  geom_vline(aes(xintercept = median(MATHS)),
+             linetype = "dashed",
+             color = 'black')
+
+```
+
+```{r}
+eng_bg <- exam_data[,-3]
+
+ggplot(data=exam_data, 
+       aes(x=ENGLISH, fill=GENDER)) +
+  geom_histogram(data = eng_bg, fill = "grey") +
+  geom_histogram(color = "black") +
+  facet_wrap(~GENDER) +
+  ylim(0,30)
+
+```
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x=MATHS, y=ENGLISH)) +
+  geom_point(size=1) +
+  xlim(0,105) +
+  ylim(0,105) +
+  geom_vline(aes(xintercept = 50),
+             linetype = "dashed",
+             color = 'grey') +
+  geom_hline(aes(yintercept = 50),
+             linetype = "dashed",
+             color = 'grey')
+
+```
