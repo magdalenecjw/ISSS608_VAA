@@ -133,8 +133,8 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#task" id="toc-task" class="nav-link active" data-scroll-target="#task">Task</a></li>
   <li><a href="#data-source" id="toc-data-source" class="nav-link" data-scroll-target="#data-source">Data Source</a></li>
-  <li><a href="#preparation-of-analytical-visualisation-on-tableau" id="toc-preparation-of-analytical-visualisation-on-tableau" class="nav-link" data-scroll-target="#preparation-of-analytical-visualisation-on-tableau">Preparation of Analytical Visualisation on Tableau</a></li>
-  <li><a href="#patterns-observed-in-analytical-visualisation" id="toc-patterns-observed-in-analytical-visualisation" class="nav-link" data-scroll-target="#patterns-observed-in-analytical-visualisation">Patterns observed in Analytical Visualisation</a></li>
+  <li><a href="#creating-the-analytical-visualization-on-tableau" id="toc-creating-the-analytical-visualization-on-tableau" class="nav-link" data-scroll-target="#creating-the-analytical-visualization-on-tableau">Creating the Analytical Visualization on Tableau</a></li>
+  <li><a href="#patterns-observed-in-this-analytical-visualization" id="toc-patterns-observed-in-this-analytical-visualization" class="nav-link" data-scroll-target="#patterns-observed-in-this-analytical-visualization">Patterns observed in this Analytical Visualization</a></li>
   </ul>
 </nav>
     </div>
@@ -172,11 +172,11 @@ ul.task-list li input[type="checkbox"] {
 <h1>Data Source</h1>
 <p>The data “<em>Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022</em>” used for this Take Home Exercise is obtained from the <a href="https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data">Department of Statistics, Singapore</a> in csv format.</p>
 </section>
-<section id="preparation-of-analytical-visualisation-on-tableau" class="level1">
-<h1>Preparation of Analytical Visualisation on Tableau</h1>
+<section id="creating-the-analytical-visualization-on-tableau" class="level1">
+<h1>Creating the Analytical Visualization on Tableau</h1>
 <ol type="1">
 <li><p>Load the csv file into Tableau as follows: <strong>Connect To a File</strong> &gt; <strong>Text file</strong>.</p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Loading_csv-01.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Fig 1</figcaption><p></p>
@@ -184,14 +184,14 @@ ul.task-list li input[type="checkbox"] {
 </div></li>
 <li><p>In a new <strong>Worksheet</strong>, Age (field: “<strong>AG</strong>”) is plotted against Population (field: “<strong>Pop</strong>”) by Gender (field: “<strong>Sex</strong>”).</p>
 <p>Since Age is already grouped into bins, this field can be used as-is in the <strong>Row</strong> shelf. The age groups are sorted in descending order as follows: right-click on <strong>AG</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Data Source Order - Descending</strong>.</p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Age_group_row_shelf.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Fig 2</figcaption><p></p>
 </figure>
 </div></li>
-<li><p>For a neater look of the final chart, the age group labels are amended to remove the underscores (_) as follows: <strong>Data</strong> pane &gt; right-click on <strong>AG</strong> &gt; <strong>Aliases</strong> &gt; Amend labels accordingly.</p>
-<div class="quarto-figure quarto-figure-center">
+<li><p>For a neater look of the final chart, the age group labels are amended to remove the underscores (_) as follows: <strong>Data</strong> pane &gt; right-click on <strong>AG</strong> &gt; <strong>Aliases</strong> &gt; amend labels accordingly.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Edit_aliases.jpg" class="img-fluid figure-img" width="261"></p>
 <p></p><figcaption class="figure-caption">Fig 3</figcaption><p></p>
@@ -200,91 +200,91 @@ ul.task-list li input[type="checkbox"] {
 <li><p>Prior to creating the age-sex pyramid chart, the Population field will need to be split out - one field for each Gender as follows: <strong>Analysis</strong> &gt; <strong>Create Calculated Field</strong>.</p>
 <p>The first calculated field <strong>MalePop</strong> is created using the following formula:</p>
 <p><code>IF [Sex]='Males' THEN [Pop] END</code></p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/MalePop.jpg" class="img-fluid figure-img" width="300"></p>
 <p></p><figcaption class="figure-caption">Fig 4a</figcaption><p></p>
 </figure>
 </div>
-<p>A second calculated field <strong>FemalePop</strong> is created with the following formula:</p>
+<p>Similarly, asecond calculated field <strong>FemalePop</strong> is created with the following formula:</p>
 <p><code>IF [Sex]='Females' THEN [Pop] END</code></p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/FemalePop.jpg" class="img-fluid figure-img" width="300"></p>
 <p></p><figcaption class="figure-caption">Fig 4b</figcaption><p></p>
 </figure>
 </div></li>
-<li><p>The two new fields <strong>MalePop</strong> and <strong>FemalePop</strong> are dragged to the <strong>Column</strong> shelf.</p>
-<div class="quarto-figure quarto-figure-center">
+<li><p>The two new fields <strong>MalePop</strong> and <strong>FemalePop</strong> are then dragged to the <strong>Column</strong> shelf.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Pop_col_shelf.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Fig 5</figcaption><p></p>
 </figure>
 </div></li>
-<li><p>To create the age-sex pyramid, right-click on the axis for <strong>MalePop</strong> to reverse the axis and rename the axis title as “Male”.</p>
-<div class="quarto-figure quarto-figure-center">
+<li><p>To create the age-sex pyramid, right-click on the axis for <strong>MalePop</strong> to reverse it. The axis title is also renamed to “Male”.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Male_axis-02.jpg" class="img-fluid figure-img" width="243"></p>
 <p></p><figcaption class="figure-caption">Fig 6</figcaption><p></p>
 </figure>
 </div></li>
-<li><p>Similarly, the axis title for <strong>FemalePop</strong> is renamed as “Female”. In the <strong>Marks</strong> card for <strong>SUM(FemalePop)</strong>, the colour is adjusted to pink to show a contrast against <strong>MalePop</strong>.</p>
-<div class="quarto-figure quarto-figure-center">
+<li><p>Likewise, the axis title for <strong>FemalePop</strong> is renamed as “Female”. In the <strong>Marks</strong> card for the aggregation <strong>SUM(FemalePop)</strong>, the colour is also adjusted to pink to display a contrast against <strong>MalePop</strong>.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Female_color-02.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Fig 7</figcaption><p></p>
 </figure>
 </div></li>
 <li><p>For the trellis display, age-sex pyramids will be shown for the Top 9 Planning Areas by Population Size.</p>
-<p>A calculated field <strong>Top9PA (measure)</strong> is created using the following formula to identify the population size by planning area.</p>
+<p>To do this, a calculated field <strong>Top9PA (measure)</strong> is created with the following formula to compute the total population size for each planning area.</p>
 <p><code>{FIXED [PA]: SUM([Pop])}</code></p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Top9PA.jpg" class="img-fluid figure-img" width="300"></p>
 <p></p><figcaption class="figure-caption">Fig 8a</figcaption><p></p>
 </figure>
 </div>
-<p>This calculated field is then duplicated as a dimension field (<strong>Top9PA (dimension)</strong>) in order to be used as a filter. This filter is dragged to the <strong>Filters</strong> shelf &gt; <strong>Top</strong> &gt; By field: <strong>Top 9</strong> by <strong>Top9PA (dimension)</strong> - <strong>Sum</strong>.</p>
-<div class="quarto-figure quarto-figure-center">
+<p>This calculated field is then duplicated as a dimension field (<strong>Top9PA (dimension)</strong>) in order to be used as a filter to identify the top 9 planning areas. The dimension field is dragged to the <strong>Filters</strong> shelf &gt; <strong>Top</strong> &gt; By field: <strong>Top 9</strong> by <strong>Top9PA (dimension) - Sum</strong>.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/Top9PA_filter.jpg" class="img-fluid figure-img" width="244"></p>
 <p></p><figcaption class="figure-caption">Fig 8b</figcaption><p></p>
 </figure>
 </div></li>
-<li><p><strong>Top9PA (dimension)</strong> is dragged to <strong>Column</strong> shelf and sorted in descending order: right-click on <strong>Top9PA (dimension)</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Data Source Order - Descending</strong>.</p>
-<div class="quarto-figure quarto-figure-center">
+<li><p><strong>PA</strong> is dragged to the <strong>Column</strong> shelf and sorted in descending order: right-click on <strong>PA</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Field - Descending - Field Name: Top9PA (measure) - Aggregation: Sum</strong>.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
-<p><img src="images/Top9PA_col_shelf.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 9</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>A second worksheet is created as “header labels”: <strong>PA</strong> is dragged to the <strong>Columns</strong> shelf and sorted in descending order, and <strong>Top9PA (measure)</strong> is dragged to the <strong>Marks</strong> card &gt; <strong>Text</strong> to create a table. Similar to Sheet 1, <strong>Top9PA (dimension)</strong> is used to filter this worksheet.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/Sheet2.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 10</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>Both worksheets can now be put together in a new <strong>Dashboard</strong> to create a trellis display.</p>
-<p>In the <strong>Dashboard</strong> pane, the <strong>Size</strong> is adjusted to “Automatic” (Fig 11a). Next, Sheet 2 is stacked above Sheet 1 within the dashboard. The Sheet Title in both sheets will be hidden. The header of Sheet 1 will also be hidden (Fig 11b) since Sheet 2 will be used as the header for thecharts.</p>
-<p><strong>Text</strong> and <strong>Blank</strong> objects (Fig 11b) are also inserted as a column header for our table and to align it against the age-sex pyramid charts accordingly. Lastly, a <strong>Text</strong> object is also inserted for the Dashboard title (<strong>Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)</strong>).</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/dashboard-01.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 11a</figcaption><p></p>
+<p><img src="images/dashboard_sort.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Fig 9a</figcaption><p></p>
 </figure>
 </div>
-<div class="quarto-figure quarto-figure-center">
+<p>For a neater look of the final chart, the field labels for the columns are hidden as follows: right-click on field label <strong>PA</strong> &gt; <strong>Hide Field Labels for Columns</strong>.</p>
+<div class="quarto-figure quarto-figure-left">
 <figure class="figure">
-<p><img src="images/dashboard_hide_header.png" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 11b</figcaption><p></p>
+<p><img src="images/dashboard_hidelabels.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Fig 9b</figcaption><p></p>
+</figure>
+</div></li>
+<li><p>Lastly, the Sheet Name, and consequently the Sheet Title, is renamed to <strong>Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)</strong> before it is saved to <a href="https://public.tableau.com/views/TakeHome_Ex01/Age-SexPyramidforTop9PlanningAreasbyPopulationSize?:language=en-GB&amp;:display_count=n&amp;:origin=viz_share_link">Tableau Public</a>.</p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/dashboard_sheetname.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Fig 10</figcaption><p></p>
 </figure>
 </div></li>
 </ol>
 </section>
-<section id="patterns-observed-in-analytical-visualisation" class="level1">
-<h1>Patterns observed in Analytical Visualisation</h1>
-<p><img src="images/image-1775927518.png" class="img-fluid"></p>
+<section id="patterns-observed-in-this-analytical-visualization" class="level1">
+<h1>Patterns observed in this Analytical Visualization</h1>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="images/image-15177974.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+<p>Across the top nine planning areas by population size, none of the age-sex pyramids are expansive in nature. This trend is expected of a highly urbanized country such as Singapore, where there is high life expectancy and low mortality and fertility rates.</p>
+<p>With the exception of Punggol and Seng Kang, most of the top planning areas are observed to have constrictive age-sex pyramids, characterized by urn-shaped graphs with a narrow base. This observation is likely to be attributed to the presence of highly mature housing estates in these planning areas. Notably, Bedok, Tampines and Hougang appear to be slightly “older” estates as a greater number of elderly (aged 70 and over) are observed to reside in these planning areas.</p>
+<p>In contrast, Punggol and Seng Kang appear more characteristic of newer and younger housing estates where bulk of the population falls within two groups: 30-49 years and 0-19 years. This is likely due to the trend of younger couples moving to newer housing estates like Punggol and Seng Kang over the past decade to start their own families.</p>
+<p>Between genders, population trends appear largely similar across the top planning areas. However, among the extremely old (80 and older), the female population is observed to be greater than the male population. This trend is aligned with global and local trends of a gender gap in life expectancy.</p>
 
 
 </section>
