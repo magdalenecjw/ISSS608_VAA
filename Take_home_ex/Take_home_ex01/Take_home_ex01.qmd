@@ -2,3 +2,6 @@
 title: "Take Home Exercise 1"
 author: "Magdalene Chan"
 ---
+
+# The Task
+In this take-home exercise, we will reveal the demographic structure of Singapore by creating age-sex pyramids across nine selected planning areas in a trellis display.
