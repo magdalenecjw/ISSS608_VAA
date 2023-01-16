@@ -1,0 +1,4 @@
+---
+title: "Take Home Exercise 1"
+author: "Magdalene Chan"
+---
