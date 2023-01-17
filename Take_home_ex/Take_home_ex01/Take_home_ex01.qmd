@@ -73,18 +73,24 @@ The data "*Singapore Residents by Planning Area / Subzone, Age Group, Sex and Ty
 
     ![Fig 9b](images/dashboard_hidelabels.jpg){fig-align="left"}
 
-10. Lastly, the Sheet Name, and consequently the Sheet Title, is renamed to **Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)** before it is saved to [Tableau Public](https://public.tableau.com/views/TakeHome_Ex01/Age-SexPyramidforTop9PlanningAreasbyPopulationSize?:language=en-GB&:display_count=n&:origin=viz_share_link).
+10. The axis for both **MalePop** and **FemalePop** should also be aligned for ease of comparison between both fields within the chart: right-click on the axis for **MalePop** \> **Edit Axis** \> **Range - Fixed - Fixed End at 15,000**. The same step is repeated for **FemalePop**.
 
-    ![Fig 10](images/dashboard_sheetname.jpg){fig-align="left"}
+    ![Fig 10](images/alignaxis.jpg){fig-align="left"}
+
+11. Lastly, the Sheet Name, and consequently the Sheet Title, is renamed to **Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)** before it is saved to [Tableau Public](https://public.tableau.com/views/TakeHome_Ex01/Age-SexPyramidforTop9PlanningAreasbyPopulationSize?:language=en-GB&:display_count=n&:origin=viz_share_link).
+
+    ![Fig 11](images/dashboard_sheetname.jpg){fig-align="left"}
 
 # Patterns observed in this Analytical Visualization
 
-![](images/image-15177974.png){fig-align="left"}
+![](images/Age-Sex%20Pyramid%20(for%20Top%209%20Planning%20Areas%20by%20Population%20Size).jpg){fig-align="left"}
 
-Across the top nine planning areas by population size, none of the age-sex pyramids are expansive in nature. This trend is expected of a highly urbanized country such as Singapore, where there is high life expectancy and low mortality and fertility rates.
+The analytical visualization that is presented above consists of age-sex pyramids for nine selected planning areas in Singapore presented in trellis display. Each pane in the trellis display shows the population for a planning area in terms of gender and age. Each pyramid starts at zero population in the center and extends left for the male population (colored in blue) and extends right for the female population (colored in pink). Each bar in the pyramid represents a band of five years and is arranged from birth (at the bottom) to old age (at the top). The selection of planning areas for this visualization is based on population size -- the top nine most populous planning areas have been chosen.
 
-With the exception of Punggol and Seng Kang, most of the top planning areas are observed to have constrictive age-sex pyramids, characterized by urn-shaped graphs with a narrow base. This observation is likely to be attributed to the presence of highly mature housing estates in these planning areas. Notably, Bedok, Tampines and Hougang appear to be slightly "older" estates as a greater number of elderly (aged 70 and over) are observed to reside in these planning areas.
+In general, none of the age-sex pyramids are considered expansive in nature, i.e. all nine pyramids have relatively narrow bases. This is expected of a highly urbanized and developed country such as Singapore, where there is high life expectancy and low mortality and fertility rates.
 
-In contrast, Punggol and Seng Kang appear more characteristic of newer and younger housing estates where bulk of the population falls within two groups: 30-49 years and 0-19 years. This is likely due to the trend of younger couples moving to newer housing estates like Punggol and Seng Kang over the past decade to start their own families.
+Instead, except for Punggol and Seng Kang, most of the top planning areas have constrictive age-sex pyramids, which is characterized by urn-shaped graphs with a narrow base. This observation is likely to be attributed to the presence of highly mature housing estates in these planning areas. Notably, Bedok, Tampines and Hougang appear to be slightly "older" estates, as a greater number of elderly (aged 70 and over) are observed to reside in these planning areas.
 
-Between genders, population trends appear largely similar across the top planning areas. However, among the extremely old (80 and older), the female population is observed to be greater than the male population. This trend is aligned with global and local trends of a gender gap in life expectancy.
+In contrast, the population of Punggol and Seng Kang appear to be more characteristic of newer and younger housing estates, where bulk of the population falls within into two main age groups of 30-49 years and 0-19 years. This is likely due to the trend of younger couples moving to newer housing estates like Punggol and Seng Kang over the past decade to start their own families.
+
+Between genders, population trends appear largely similar across the top planning areas. However, among the extremely old (75 and older), the female population is observed to be greater than the male population. This trend is aligned with the gender gap in life expectancy that is observed both globally and locally.
