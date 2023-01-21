@@ -1,6 +1,7 @@
 ---
 title: "Take Home Exercise 1"
 author: "Magdalene Chan"
+tbl-colwidths: [5,25,70]
 ---
 
 # Task
@@ -13,71 +14,63 @@ The data "*Singapore Residents by Planning Area / Subzone, Age Group, Sex and Ty
 
 # Creating the Analytical Visualization on Tableau
 
-1.  Load the csv file into Tableau as follows: **Connect To a File** \> **Text file**.
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| No.     | Steps                                                                                                                                                                                                                                                                                   | Screenshot                                 |
++=========+=========================================================================================================================================================================================================================================================================================+============================================+
+| 1       | Load the csv file into Tableau as follows: **Connect To a File** \> **Text file**.                                                                                                                                                                                                      | ![](images/Loading_csv-01.jpg)             |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 2       | In a new **Worksheet**, Age (field: "**AG**") is plotted against Population (field: "**Pop**") by Gender (field: "**Sex**").                                                                                                                                                            | ![](images/Age_group_row_shelf.jpg)        |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | Since Age is already grouped into bins, this field can be used as-is in the **Row** shelf. The age groups are sorted in descending order as follows: right-click on **AG** \> **Sort** \> Sort by **Data Source Order - Descending**.                                                   |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 3       | For a neater look of the final chart, the age group labels are amended to remove the underscores (\_) as follows: **Data** pane \> right-click on **AG** \> **Aliases** \> amend labels accordingly.                                                                                    | ![](images/Edit_aliases.jpg){width="261"}  |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 4       | Prior to creating the age-sex pyramid chart, the Population field will need to be split out - one field for each Gender as follows: **Analysis** \> **Create Calculated Field**.                                                                                                        | ![](images/MalePop.jpg){width="300"}       |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | The first calculated field **MalePop** is created using the following formula:                                                                                                                                                                                                          |                                            |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | `IF [Sex]='Males' THEN [Pop] END`                                                                                                                                                                                                                                                       |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 4       | Similarly, a second calculated field **FemalePop** is created with the following formula:                                                                                                                                                                                               | ![](images/FemalePop.jpg){width="300"}     |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | `IF [Sex]='Females' THEN [Pop] END`                                                                                                                                                                                                                                                     |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 5       | The two new fields **MalePop** and **FemalePop** are then dragged to the **Column** shelf.                                                                                                                                                                                              | ![](images/Pop_col_shelf.jpg)              |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 6       | To create the age-sex pyramid, right-click on the axis for **MalePop** to reverse it. The axis title is also renamed to "Male".                                                                                                                                                         | ![](images/Male_axis-02.jpg){width="243"}  |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 7       | Likewise, the axis title for **FemalePop** is renamed as "Female". In the **Marks** card for the aggregation **SUM(FemalePop)**, the colour is also adjusted to pink to display a contrast against **MalePop**.                                                                         | ![](images/Female_color-02.jpg)            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 8       | For the trellis display, age-sex pyramids will be shown for the Top 9 Planning Areas by Population Size.                                                                                                                                                                                | ![](images/Top9PA.jpg){width="300"}        |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | To do this, a calculated field **Top9PA (measure)** is created with the following formula to compute the total population size for each planning area.                                                                                                                                  |                                            |
+|         |                                                                                                                                                                                                                                                                                         |                                            |
+|         | `{FIXED [PA]: SUM([Pop])}`                                                                                                                                                                                                                                                              |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 9       | This calculated field is then duplicated as a dimension field (**Top9PA (dimension)**) in order to be used as a filter to identify the top 9 planning areas. The dimension field is dragged to the **Filters** shelf \> **Top** \> By field: **Top 9** by **Top9PA (dimension) - Sum**. | ![](images/Top9PA_filter.jpg){width="244"} |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 10      | **PA** is dragged to the **Column** shelf and sorted in descending order: right-click on **PA** \> **Sort** \> Sort by **Field - Descending - Field Name: Top9PA (measure) - Aggregation: Sum**.                                                                                        | ![](images/dashboard_sort.jpg)             |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 11      | For a neater look of the final chart, the field labels for the columns are hidden as follows: right-click on field label **PA** \> **Hide Field Labels for Columns**.                                                                                                                   | ![](images/dashboard_hidelabels.jpg)       |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 12      |                                                                                                                                                                                                                                                                                         |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 13      |                                                                                                                                                                                                                                                                                         |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 14      |                                                                                                                                                                                                                                                                                         |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
+| 15      |                                                                                                                                                                                                                                                                                         |                                            |
++---------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+--------------------------------------------+
 
-    ![Fig 1](images/Loading_csv-01.jpg){fig-align="left"}
-
-2.  In a new **Worksheet**, Age (field: "**AG**") is plotted against Population (field: "**Pop**") by Gender (field: "**Sex**").
-
-    Since Age is already grouped into bins, this field can be used as-is in the **Row** shelf. The age groups are sorted in descending order as follows: right-click on **AG** \> **Sort** \> Sort by **Data Source Order - Descending**.
-
-    ![Fig 2](images/Age_group_row_shelf.jpg){fig-align="left"}
-
-3.  For a neater look of the final chart, the age group labels are amended to remove the underscores (\_) as follows: **Data** pane \> right-click on **AG** \> **Aliases** \> amend labels accordingly.
-
-    ![Fig 3](images/Edit_aliases.jpg){width="261" fig-align="left"}
-
-4.  Prior to creating the age-sex pyramid chart, the Population field will need to be split out - one field for each Gender as follows: **Analysis** \> **Create Calculated Field**.
-
-    The first calculated field **MalePop** is created using the following formula:
-
-    `IF [Sex]='Males' THEN [Pop] END`
-
-    ![Fig 4a](images/MalePop.jpg){width="300" fig-align="left"}
-
-    Similarly, asecond calculated field **FemalePop** is created with the following formula:
-
-    `IF [Sex]='Females' THEN [Pop] END`
-
-    ![Fig 4b](images/FemalePop.jpg){width="300" fig-align="left"}
-
-5.  The two new fields **MalePop** and **FemalePop** are then dragged to the **Column** shelf.
-
-    ![Fig 5](images/Pop_col_shelf.jpg){fig-align="left"}
-
-6.  To create the age-sex pyramid, right-click on the axis for **MalePop** to reverse it. The axis title is also renamed to "Male".
-
-    ![Fig 6](images/Male_axis-02.jpg){width="243" fig-align="left"}
-
-7.  Likewise, the axis title for **FemalePop** is renamed as "Female". In the **Marks** card for the aggregation **SUM(FemalePop)**, the colour is also adjusted to pink to display a contrast against **MalePop**.
-
-    ![Fig 7](images/Female_color-02.jpg){fig-align="left"}
-
-8.  For the trellis display, age-sex pyramids will be shown for the Top 9 Planning Areas by Population Size.
-
-    To do this, a calculated field **Top9PA (measure)** is created with the following formula to compute the total population size for each planning area.
-
-    `{FIXED [PA]: SUM([Pop])}`
-
-    ![Fig 8a](images/Top9PA.jpg){width="300" fig-align="left"}
-
-    This calculated field is then duplicated as a dimension field (**Top9PA (dimension)**) in order to be used as a filter to identify the top 9 planning areas. The dimension field is dragged to the **Filters** shelf \> **Top** \> By field: **Top 9** by **Top9PA (dimension) - Sum**.
-
-    ![Fig 8b](images/Top9PA_filter.jpg){width="244" fig-align="left"}
-
-9.  **PA** is dragged to the **Column** shelf and sorted in descending order: right-click on **PA** \> **Sort** \> Sort by **Field - Descending - Field Name: Top9PA (measure) - Aggregation: Sum**.
-
-    ![Fig 9a](images/dashboard_sort.jpg){fig-align="left"}
-
-    For a neater look of the final chart, the field labels for the columns are hidden as follows: right-click on field label **PA** \> **Hide Field Labels for Columns**.
+1.  
 
     ![Fig 9b](images/dashboard_hidelabels.jpg){fig-align="left"}
 
-10. The axis for both **MalePop** and **FemalePop** should also be aligned for ease of comparison between both fields within the chart: right-click on the axis for **MalePop** \> **Edit Axis** \> **Range - Fixed - Fixed End at 15,000**. The same step is repeated for **FemalePop**.
+2.  The axis for both **MalePop** and **FemalePop** should also be aligned for ease of comparison between both fields within the chart: right-click on the axis for **MalePop** \> **Edit Axis** \> **Range - Fixed - Fixed End at 15,000**. The same step is repeated for **FemalePop**.
 
     ![Fig 10](images/alignaxis.jpg){fig-align="left"}
 
-11. Lastly, the Sheet Name, and consequently the Sheet Title, is renamed to **Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)** before it is saved to [Tableau Public](https://public.tableau.com/views/TakeHome_Ex01/Age-SexPyramidforTop9PlanningAreasbyPopulationSize?:language=en-GB&:display_count=n&:origin=viz_share_link).
+3.  Lastly, the Sheet Name, and consequently the Sheet Title, is renamed to **Age-Sex Pyramid (for Top 9 Planning Areas by Population Size)** before it is saved to [Tableau Public](https://public.tableau.com/views/TakeHome_Ex01/Age-SexPyramidforTop9PlanningAreasbyPopulationSize?:language=en-GB&:display_count=n&:origin=viz_share_link).
 
     ![Fig 11](images/dashboard_sheetname.jpg){fig-align="left"}
 

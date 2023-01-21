@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 2"
+title: "Hands-on Exercise 2: Creating Elegant Graphics on ggplot2"
 author: "Magdalene Chan"
 ---
 
@@ -8,4 +8,3 @@ author: "Magdalene Chan"
 pacman::p_load(tidyverse)
 exam_data <- read_csv("data/Exam_data.csv", show_col_types = FALSE)
 ```
-

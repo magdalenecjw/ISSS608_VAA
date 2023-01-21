@@ -89,10 +89,6 @@ ul.task-list li input[type="checkbox"] {
     <a class="dropdown-item" href="../../Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html">
  <span class="dropdown-text">Hands-on Exercise 1</span></a>
   </li>  
-        <li>
-    <a class="dropdown-item" href="../../Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html">
- <span class="dropdown-text">Hands-on Exercise 2</span></a>
-  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -103,6 +99,26 @@ ul.task-list li input[type="checkbox"] {
         <li>
     <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex01.html">
  <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex02.html">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex03.html">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex04.html">
+ <span class="dropdown-text">Take-home Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex05.html">
+ <span class="dropdown-text">Take-home Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take_home_ex/Take_home_ex01/Take_home_ex06.html">
+ <span class="dropdown-text">Take-home Exercise 6</span></a>
   </li>  
     </ul>
   </li>
@@ -174,92 +190,110 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="creating-the-analytical-visualization-on-tableau" class="level1">
 <h1>Creating the Analytical Visualization on Tableau</h1>
-<ol type="1">
-<li><p>Load the csv file into Tableau as follows: <strong>Connect To a File</strong> &gt; <strong>Text file</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Loading_csv-01.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 1</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>In a new <strong>Worksheet</strong>, Age (field: “<strong>AG</strong>”) is plotted against Population (field: “<strong>Pop</strong>”) by Gender (field: “<strong>Sex</strong>”).</p>
-<p>Since Age is already grouped into bins, this field can be used as-is in the <strong>Row</strong> shelf. The age groups are sorted in descending order as follows: right-click on <strong>AG</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Data Source Order - Descending</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Age_group_row_shelf.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 2</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>For a neater look of the final chart, the age group labels are amended to remove the underscores (_) as follows: <strong>Data</strong> pane &gt; right-click on <strong>AG</strong> &gt; <strong>Aliases</strong> &gt; amend labels accordingly.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Edit_aliases.jpg" class="img-fluid figure-img" width="261"></p>
-<p></p><figcaption class="figure-caption">Fig 3</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>Prior to creating the age-sex pyramid chart, the Population field will need to be split out - one field for each Gender as follows: <strong>Analysis</strong> &gt; <strong>Create Calculated Field</strong>.</p>
+<table class="table">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 25%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>No.</th>
+<th>Steps</th>
+<th>Screenshot</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>Load the csv file into Tableau as follows: <strong>Connect To a File</strong> &gt; <strong>Text file</strong>.</td>
+<td><img src="images/Loading_csv-01.jpg" class="img-fluid"></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><p>In a new <strong>Worksheet</strong>, Age (field: “<strong>AG</strong>”) is plotted against Population (field: “<strong>Pop</strong>”) by Gender (field: “<strong>Sex</strong>”).</p>
+<p>Since Age is already grouped into bins, this field can be used as-is in the <strong>Row</strong> shelf. The age groups are sorted in descending order as follows: right-click on <strong>AG</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Data Source Order - Descending</strong>.</p></td>
+<td><img src="images/Age_group_row_shelf.jpg" class="img-fluid"></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>For a neater look of the final chart, the age group labels are amended to remove the underscores (_) as follows: <strong>Data</strong> pane &gt; right-click on <strong>AG</strong> &gt; <strong>Aliases</strong> &gt; amend labels accordingly.</td>
+<td><img src="images/Edit_aliases.jpg" class="img-fluid" width="261"></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><p>Prior to creating the age-sex pyramid chart, the Population field will need to be split out - one field for each Gender as follows: <strong>Analysis</strong> &gt; <strong>Create Calculated Field</strong>.</p>
 <p>The first calculated field <strong>MalePop</strong> is created using the following formula:</p>
-<p><code>IF [Sex]='Males' THEN [Pop] END</code></p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/MalePop.jpg" class="img-fluid figure-img" width="300"></p>
-<p></p><figcaption class="figure-caption">Fig 4a</figcaption><p></p>
-</figure>
-</div>
-<p>Similarly, asecond calculated field <strong>FemalePop</strong> is created with the following formula:</p>
-<p><code>IF [Sex]='Females' THEN [Pop] END</code></p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/FemalePop.jpg" class="img-fluid figure-img" width="300"></p>
-<p></p><figcaption class="figure-caption">Fig 4b</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>The two new fields <strong>MalePop</strong> and <strong>FemalePop</strong> are then dragged to the <strong>Column</strong> shelf.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Pop_col_shelf.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 5</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>To create the age-sex pyramid, right-click on the axis for <strong>MalePop</strong> to reverse it. The axis title is also renamed to “Male”.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Male_axis-02.jpg" class="img-fluid figure-img" width="243"></p>
-<p></p><figcaption class="figure-caption">Fig 6</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>Likewise, the axis title for <strong>FemalePop</strong> is renamed as “Female”. In the <strong>Marks</strong> card for the aggregation <strong>SUM(FemalePop)</strong>, the colour is also adjusted to pink to display a contrast against <strong>MalePop</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Female_color-02.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 7</figcaption><p></p>
-</figure>
-</div></li>
-<li><p>For the trellis display, age-sex pyramids will be shown for the Top 9 Planning Areas by Population Size.</p>
+<p><code>IF [Sex]='Males' THEN [Pop] END</code></p></td>
+<td><img src="images/MalePop.jpg" class="img-fluid" width="300"></td>
+</tr>
+<tr class="odd">
+<td>4</td>
+<td><p>Similarly, a second calculated field <strong>FemalePop</strong> is created with the following formula:</p>
+<p><code>IF [Sex]='Females' THEN [Pop] END</code></p></td>
+<td><img src="images/FemalePop.jpg" class="img-fluid" width="300"></td>
+</tr>
+<tr class="even">
+<td>5</td>
+<td>The two new fields <strong>MalePop</strong> and <strong>FemalePop</strong> are then dragged to the <strong>Column</strong> shelf.</td>
+<td><img src="images/Pop_col_shelf.jpg" class="img-fluid"></td>
+</tr>
+<tr class="odd">
+<td>6</td>
+<td>To create the age-sex pyramid, right-click on the axis for <strong>MalePop</strong> to reverse it. The axis title is also renamed to “Male”.</td>
+<td><img src="images/Male_axis-02.jpg" class="img-fluid" width="243"></td>
+</tr>
+<tr class="even">
+<td>7</td>
+<td>Likewise, the axis title for <strong>FemalePop</strong> is renamed as “Female”. In the <strong>Marks</strong> card for the aggregation <strong>SUM(FemalePop)</strong>, the colour is also adjusted to pink to display a contrast against <strong>MalePop</strong>.</td>
+<td><img src="images/Female_color-02.jpg" class="img-fluid"></td>
+</tr>
+<tr class="odd">
+<td>8</td>
+<td><p>For the trellis display, age-sex pyramids will be shown for the Top 9 Planning Areas by Population Size.</p>
 <p>To do this, a calculated field <strong>Top9PA (measure)</strong> is created with the following formula to compute the total population size for each planning area.</p>
-<p><code>{FIXED [PA]: SUM([Pop])}</code></p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Top9PA.jpg" class="img-fluid figure-img" width="300"></p>
-<p></p><figcaption class="figure-caption">Fig 8a</figcaption><p></p>
-</figure>
-</div>
-<p>This calculated field is then duplicated as a dimension field (<strong>Top9PA (dimension)</strong>) in order to be used as a filter to identify the top 9 planning areas. The dimension field is dragged to the <strong>Filters</strong> shelf &gt; <strong>Top</strong> &gt; By field: <strong>Top 9</strong> by <strong>Top9PA (dimension) - Sum</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/Top9PA_filter.jpg" class="img-fluid figure-img" width="244"></p>
-<p></p><figcaption class="figure-caption">Fig 8b</figcaption><p></p>
-</figure>
-</div></li>
-<li><p><strong>PA</strong> is dragged to the <strong>Column</strong> shelf and sorted in descending order: right-click on <strong>PA</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Field - Descending - Field Name: Top9PA (measure) - Aggregation: Sum</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="images/dashboard_sort.jpg" class="img-fluid figure-img"></p>
-<p></p><figcaption class="figure-caption">Fig 9a</figcaption><p></p>
-</figure>
-</div>
-<p>For a neater look of the final chart, the field labels for the columns are hidden as follows: right-click on field label <strong>PA</strong> &gt; <strong>Hide Field Labels for Columns</strong>.</p>
-<div class="quarto-figure quarto-figure-left">
+<p><code>{FIXED [PA]: SUM([Pop])}</code></p></td>
+<td><img src="images/Top9PA.jpg" class="img-fluid" width="300"></td>
+</tr>
+<tr class="even">
+<td>9</td>
+<td>This calculated field is then duplicated as a dimension field (<strong>Top9PA (dimension)</strong>) in order to be used as a filter to identify the top 9 planning areas. The dimension field is dragged to the <strong>Filters</strong> shelf &gt; <strong>Top</strong> &gt; By field: <strong>Top 9</strong> by <strong>Top9PA (dimension) - Sum</strong>.</td>
+<td><img src="images/Top9PA_filter.jpg" class="img-fluid" width="244"></td>
+</tr>
+<tr class="odd">
+<td>10</td>
+<td><strong>PA</strong> is dragged to the <strong>Column</strong> shelf and sorted in descending order: right-click on <strong>PA</strong> &gt; <strong>Sort</strong> &gt; Sort by <strong>Field - Descending - Field Name: Top9PA (measure) - Aggregation: Sum</strong>.</td>
+<td><img src="images/dashboard_sort.jpg" class="img-fluid"></td>
+</tr>
+<tr class="even">
+<td>11</td>
+<td>For a neater look of the final chart, the field labels for the columns are hidden as follows: right-click on field label <strong>PA</strong> &gt; <strong>Hide Field Labels for Columns</strong>.</td>
+<td><img src="images/dashboard_hidelabels.jpg" class="img-fluid"></td>
+</tr>
+<tr class="odd">
+<td>12</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>13</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>14</td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>15</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol type="1">
+<li><div class="quarto-figure quarto-figure-left">
 <figure class="figure">
 <p><img src="images/dashboard_hidelabels.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Fig 9b</figcaption><p></p>
