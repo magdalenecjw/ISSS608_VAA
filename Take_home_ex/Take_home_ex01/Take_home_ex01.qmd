@@ -1,6 +1,7 @@
 ---
 title: "Take Home Exercise 1"
 author: "Magdalene Chan"
+date: "`r Sys.Date()`"
 tbl-colwidths: [5,25,70]
 ---
 
