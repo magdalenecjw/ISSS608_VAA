@@ -1,0 +1,5 @@
+---
+title: "Take Home Exercise 2"
+author: "Magdalene Chan"
+date: "`r Sys.Date()`"
+---
