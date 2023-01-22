@@ -206,7 +206,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="header">
 <th>No.</th>
 <th>Steps</th>
-<th>Screenshots</th>
+<th>Screenshot</th>
 </tr>
 </thead>
 <tbody>
@@ -230,33 +230,34 @@ ul.task-list li input[type="checkbox"] {
 <td><p>Prior to creating the age-sex pyramid, the Population field is split into two for each Gender: <strong>Analysis</strong> &gt; <strong>Create Calculated Field</strong>. The calculated fields <strong>MalePop</strong> and <strong>FemalePop</strong> are created with the following formula:</p>
 <p><code>IF [Sex]='Males' THEN [Pop] END</code></p>
 <p><code>IF [Sex]='Females' THEN [Pop] END</code></p></td>
-<td><img src="images/04_male_female_pop.jpg" class="img-fluid"></td>
+<td><img src="images/04_male_female_pop.jpg" class="img-fluid" width="883"></td>
 </tr>
 <tr class="odd">
 <td>5</td>
-<td><p>The proportion of males and females in the total population is then computed as the calculated fields <strong>MalePct</strong> and <strong>FemalePct</strong>.</p>
+<td><p>The proportion of males and females in the total population is then computed as calculated fields <strong>MalePct</strong> and <strong>FemalePct</strong>.</p>
 <p><code>SUM([MalePop])/TOTAL(SUM([Pop]))</code></p>
 <p><code>SUM([FemalePop])/TOTAL(SUM([Pop]))</code></p></td>
-<td><img src="images/05_male_female_pct.jpg" class="img-fluid"></td>
+<td><img src="images/05_male_female_pct.jpg" class="img-fluid" width="886"></td>
 </tr>
 <tr class="even">
 <td>6</td>
-<td><p>Next, a reference line that shows the average percentage of male and female population for Singapore in each age group across all planning areas is created. Firstly, the calculated fields <strong>MalePop_Fixed</strong>, <strong>FemalePop_Fixed</strong> and <strong>TotalPop_Fixed</strong>. FIXED level of detail expressions are used in the calculation so that the values can be created without reference to the dimensions in the worksheet later on.</p>
+<td><p>Next, a reference line that shows the average percentage of male and female population for Singapore in each age group across all planning areas is created.</p>
+<p>Firstly, the calculated fields <strong>MalePop_Fixed</strong>, <strong>FemalePop_Fixed</strong> and <strong>TotalPop_Fixed</strong>. FIXED level of detail expressions are used in the calculation so that the values can be created without reference to the dimensions in the worksheet later on.</p>
 <p><code>{FIXED [AG]: SUM([FemalePop])}</code></p>
 <p><code>{FIXED [AG]: SUM([MalePop])}</code></p>
 <p><code>{FIXED [AG]: SUM([Pop])}</code></p></td>
-<td><img src="images/06_fixed_pop.jpg" class="img-fluid"></td>
+<td><img src="images/06_fixed_pop.jpg" class="img-fluid" width="864"></td>
 </tr>
 <tr class="odd">
 <td>7</td>
-<td><p>Again, the proportion of males and females in the total population is then computed as the calculated fields <strong>MalePct_Fixed</strong> and <strong>FemalePct_Fixed</strong>.</p>
-<p><code>SUM([FemalePop_Fixed])/TOTAL(SUM([TotalPop_Fixed]))</code></p>
-<p><code>SUM([MalePop_Fixed])/TOTAL(SUM([TotalPop_Fixed]))</code></p></td>
-<td><img src="images/07_fixed_pct.jpg" class="img-fluid"></td>
+<td><p>Again, the proportion of males and females in the total population is then computed as calculated fields <strong>MalePct_Fixed</strong> and <strong>FemalePct_Fixed</strong>.</p>
+<p><code>SUM([FemalePop_Fixed])/ TOTAL(SUM([TotalPop_Fixed]))</code></p>
+<p><code>SUM([MalePop_Fixed])/ TOTAL(SUM([TotalPop_Fixed]))</code></p></td>
+<td><img src="images/07_fixed_pct.jpg" class="img-fluid" width="903"></td>
 </tr>
 <tr class="even">
 <td>8</td>
-<td>Next, the fields <strong>MalePct</strong>, <strong>MalePct_Fixed</strong>, <strong>FemalePct</strong> and <strong>FemalePct_Fixed</strong> are dragged to the <strong>Columns</strong> shelf. Right-click on <strong>MalePct_Fixed</strong> and <strong>FemalePct_Fixed</strong> to create a dual axis. This will allow <strong>MalePct</strong> and <strong>MalePct_Fixed</strong> to use the same axis, as with <strong>FemalePct</strong> and <strong>FemalePct_Fixed</strong>.</td>
+<td>Next, the fields <strong>MalePct</strong>, <strong>MalePct_Fixed</strong>, <strong>FemalePct</strong> and <strong>FemalePct_Fixed</strong> are dragged to the <strong>Columns</strong> shelf. Right-click on <strong>MalePct_Fixed</strong> and <strong>FemalePct_Fixed</strong> in the the <strong>Columns</strong> shelf to create a dual axis. This will allow <strong>MalePct</strong> and <strong>MalePct_Fixed</strong> to use the same axis, as with <strong>FemalePct</strong> and <strong>FemalePct_Fixed</strong>.</td>
 <td><img src="images/08_dual_axis.jpg" class="img-fluid"></td>
 </tr>
 <tr class="odd">
@@ -276,12 +277,12 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>12</td>
-<td>Next, drag <strong>MalePct</strong> to <strong>Color</strong> in the <strong>MalePct</strong> <strong>Marks</strong> card to create a colour gradient based on the values. At the top right hand corner of the legend, right-click to select <strong>Edit Title</strong> and amend to “% Males” for better clarity.</td>
+<td>Next, drag <strong>MalePct</strong> to <strong>Color</strong> in the <strong>MalePct</strong> <strong>Marks</strong> card to create a colour gradient based on the values. At the top right-hand corner of the legend, right-click to select <strong>Edit Title</strong> and amend to “% Males” for better clarity.</td>
 <td><img src="images/12_legend_title.jpg" class="img-fluid"></td>
 </tr>
 <tr class="odd">
 <td>13</td>
-<td>Similarly, drag <strong>FemalePct</strong> to <strong>Color</strong> in the <strong>FemalePct</strong> <strong>Marks</strong> card to create a colour gradient based on the values. At the top right hand corner of the legend, right-click to select <strong>Edit Title</strong> and amend to “% Females” for better clarity. The colour is also changed to a contrasting colour orange: right-click top right hand corner of legend &gt; <strong>Edit Colors</strong> &gt; amend <strong>Palette</strong> to <strong>Orange</strong>.</td>
+<td>Similarly, drag <strong>FemalePct</strong> to <strong>Color</strong> in the <strong>FemalePct</strong> <strong>Marks</strong> card to create a colour gradient based on the values. At the top right-hand corner of the legend, right-click to select <strong>Edit Title</strong> and amend to “% Females” for better clarity. The colour is also changed to a contrasting colour orange: right-click top right hand corner of legend &gt; <strong>Edit Colors</strong> &gt; amend <strong>Palette</strong> to <strong>Orange</strong>.</td>
 <td><img src="images/13_legend_colour.jpg" class="img-fluid"></td>
 </tr>
 <tr class="even">
