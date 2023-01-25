@@ -3,3 +3,162 @@ title: "Take Home Exercise 2"
 author: "Magdalene Chan"
 date: "`r Sys.Date()`"
 ---
+
+# Task
+
+This Take Home Exercise is done based on a peer submission of a visualization on the Age-Sex Pyramids by Planning Area in Singapore. The peer submission will be critiqued on clarity and aesthetics, redesigned using data visualisation principles and best practices, and remade using ggplot2, ggplot2 extensions and tidyverse packages.
+
+# Data Source
+
+The data "*Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022*" used for this Take Home Exercise is obtained from the [Department of Statistics, Singapore](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data) in csv format.
+
+# Critique of Peer Submission
+
+The [following peer submission](https://public.tableau.com/app/profile/ziyi3083/viz/Take-home_Ex01_Dashboard/Dashboard) will be reviewed and remade in terms of clarity and aesthetics:
+
+![](images/image-355852776.png)
+
+## Clarity
+
+### What Worked Well
+
+In general, the visualization is clear in terms of layout. Each chart within the submission has a chart title to annotate what the chart is about, which makes the objective of the visualization clear to the reader.
+
+The display of an overall age-sex pyramid of Singapore population also provides a good reference against the age-sex pyramids of the top nine most populous planning areas.
+
+### Areas of Improvement
+
+However, the age-sex pyramids appear confusing to the reader as it is unclear what the grey bars represent, since it is not clearly annotated on the chart. The presence of the grey bars also mean that the true shape of the pyramids (which should comprise of just the pink and blue bars) cannot be clearly seen.
+
+In addition, due to the size of the data labels, the pyramid charts appear cluttered and it is difficult to read and analyze each pyramid, especially those within the trellis display.
+
+Another possible area of improvement in the visualization is the placement of the Male vs. Female populations. As age-sex pyramids are technical diagrams used by those studying population geography, conforming to the standard practice of graphing the Male population on the left side of the pyramid and the Female population on the right may make the visualization even more intuitive to read.
+
+Lastly, while the top-right chart shows the top nine most populous planning areas ranked in descending order, the trellis display does not make use of the same order to arrange the age-sex pyramids of the planning areas.
+
+## Aesthetics
+
+### What Worked Well
+
+The choice of colours are pleasing to the eye and provide clear and intuitive distinction between the Male and Female populations.
+
+### Areas of Improvement
+
+However, the large data labels clutter the visualization with unnecessary detail and take the attention away from the shape of the age-sex pyramids. In addition, the age group labels are presented in their raw form with the underscores (\_) in the label, which adds to the clutter.
+
+Upon further examination of the chart, it also appears that the grey bars are showing the population of the opposite gender i.e. the grey bars in the "Female population" side of the pyramid are showing exactly the same data as the blue bars in the "Male population" side, and vice versa. This means that there are duplicates of the same information within the chart that do not value add to the chart.
+
+Another area of duplication in the visualization is the highlighting of the top nine most populous planning areas. Apart from being shown in the trellis display, it is also shown in the top-right graph "Population by Areas", suggesting the latter could be made redundant.
+
+# Sketch of Proposed Design
+
+In my proposed design, elements that are highlighted as duplication in the original visualization have been excluded, i.e. the grey bars in the pyramid charts and the additional chart highlighting the top nine most populous planning areas. Only the overall age-sex pyramid of Singapore population and the trellis display showing the age-sex pyramids of the top nine most populous planning areas are kept. With this change, the trellis display has also been changed from a horizontal trellis panel layout to a 3x3 trellis grid layout for a more efficient use of space.
+
+The trellis display has also been reordered such that the age-sex pyramid of the most populous planning area in Singapore will be shown in the first pane, followed by the pyramid of the second most populous planning area and so on. The population of each planning area is also shown in parenthesis beside the planning area label above each pane.
+
+Lastly, the age group labels are renamed and the large data labels are removed from the charts to reduce clutter in the chart.
+
+# Remake of Original Submission
+
+## Data Wrangling
+
+The packages tidyverse and ggpubr will be used to remake the visualization.
+
+After the data is loaded, the age groups labels are tidied up and reordered.
+
+```{r}
+pacman::p_load(tidyverse)
+pacman::p_load(ggpubr)
+
+pop_data <- read_csv("data/respopagesextod2022.csv",show_col_types = FALSE)
+
+#Replace underscores in age group (AG) with spaces
+pop_data$AG <- gsub("_", " ", pop_data$AG)
+
+#Reorder age group (AG)
+level_order <- c("0 to 4", "5 to 9", "10 to 14", "15 to 19", 
+                 "20 to 24", "25 to 29", "30 to 34", "35 to 39", 
+                 "40 to 44", "45 to 49", "50 to 54", "55 to 59", 
+                 "60 to 64", "65 to 69", "70 to 74", "75 to 79", 
+                 "80 to 84", "85 to 89", "90 and over")
+```
+
+Next, the age-sex pyramid for the overall Singapore population is created using geom_bar.
+
+```{r, fig.width=12,fig.height=6}
+#Create age-sex pyramid for overall Singapore population
+pop_pyramid <- pop_data %>%
+  mutate(Pop = ifelse(Sex=="Males", Pop*(-1), Pop*1))%>%
+  ggplot(aes(x = factor(AG, level = level_order),y = Pop, fill=Sex)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(breaks = seq(-150000, 150000, 50000), 
+                     labels = paste0(as.character(c(seq(150, 0, -50), 
+                                                    seq(50, 150, 50))),
+                                     "k")) +
+  labs(title = "Age-Sex Pyramid of Singapore across all Planning Areas", 
+       x = "Age Groups", y = "Population", fill="Gender") + 
+  theme(text = element_text(size = 10)) + 
+  scale_fill_manual(values = c("Males" = "cornflowerblue",
+                               "Females" = "lightpink2"))
+
+pop_pyramid
+```
+
+For the trellis display, the data for the top nine most populous planning areas is filtered out and labels are created for the individual panes.
+
+```{r}
+#Create a planning area (PA) filter for facet wrap
+PA_pop_tab <- pop_data %>%
+  group_by(PA) %>%
+  summarise(PA_pop = sum(Pop)) %>%
+  top_n(n=9, wt=PA_pop) %>%
+  arrange(desc(PA_pop))
+
+PA_filter <- PA_pop_tab$PA
+
+#Filter the data accordingly
+top9_data <- filter(pop_data, PA %in% PA_filter)
+
+facet_pyramid_data <- top9_data %>%
+  mutate(Pop = ifelse(Sex=="Males", Pop*(-1),Pop*1))
+
+#Create labels for facet wrap
+PA_labels <- paste(" ( Pop:",trimws(PA_pop_tab$PA_pop),")")
+
+appender <- function(string, suffix = PA_labels) paste0(string, suffix)
+```
+
+Next, the age-sex pyramids for the top nine most populous planning areas are also created.
+
+```{r, fig.width=12,fig.height=6}
+#Create age-sex pyramids in trellis display for top 9 planning areas
+facet_pyramid <- facet_pyramid_data %>%
+  mutate(across(PA, factor, levels=PA_filter)) %>%
+  ggplot(aes(x = factor(AG, level = level_order),y = Pop, fill=Sex)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+  scale_y_continuous(breaks = seq(-15000, 15000, 5000), 
+                     labels = paste0(as.character(c(seq(15, 0, -5), 
+                                                    seq(5, 15, 5))),"k")) +
+  labs(title = "Age-Sex Pyramids of Top 9 Most Populous Planning Areas", 
+       x = "", y = "Population", fill="Gender") +
+  facet_wrap(vars(PA), ncol=3, labeller=as_labeller(appender)) + 
+  theme(axis.text.x = element_text(size = 6),
+        axis.text.y = element_text(size = 6),
+        strip.text = element_text(size = 7),
+        plot.title = element_text(size = 12)) +
+  scale_fill_manual(values = c("Males" = "cornflowerblue", 
+                               "Females" = "lightpink2"))
+
+facet_pyramid
+```
+
+Lastly, both plots are combined into a figure and the data source is added to the bottom of the chart. 
+
+```{r, fig.width=12,fig.height=6}
+#Combine both plots
+annotate_figure(ggarrange(pop_pyramid, facet_pyramid, 
+                          legend="right", common.legend=TRUE),
+                bottom = text_grob("Source: Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2022. From the Department of Statistics, Singapore (2022)", size = 7))
+```
