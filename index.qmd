@@ -3,4 +3,6 @@ title: "ISSS608 Visual Analytics and Applications"
 author: "Magdalene Chan"
 ---
 
-In this website, you will find my coursework prepared for the SMU MITB course ISSS608 Visual Analytics and Applications.
+This page contains all my coursework prepared for the SMU MITB course ISSS608 Visual Analytics and Applications.
+
+For queries or clarifications on this site, please drop me an email (link attached at sidebar).

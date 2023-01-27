@@ -3,26 +3,44 @@ project:
 
 website:
   title: "ISSS608 VAA"
-  navbar:
-    left:
-    - text: "Hands-on Exercise"
-      menu:
-        - text: "Hands-on Exercise 1"
-          href: "Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html"
-    - text: "Take-home Exercise"
-      menu:
-        - text: "Take-home Exercise 1"
-          href: "Take_home_ex/Take_home_ex01/Take_home_ex01.html"
-        - text: "Take-home Exercise 2"
-          href: "Take_home_ex/Take_home_ex02/Take_home_ex02.html"
-        - text: "Take-home Exercise 3"
-          href: "Take_home_ex/Take_home_ex03/Take_home_ex03.html"
-        - text: "Take-home Exercise 4"
-          href: "Take_home_ex/Take_home_ex04/Take_home_ex04.html"
-    right:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+  site-url: "https://magdalenechan-iss608.netlify.app/"
+  sidebar:
+    background: "#A8D8CA"
+    logo: "images/logo.png"
+    pinned: true
+    align: center
+    tools:
+      - icon: github
+        href: "https://github.com/magdalenecjw/ISSS608_VAA"
+        text: "GitHub"
+      - icon: bar-chart-fill
+        href: "https://public.tableau.com/app/profile/magdalene.chan"
+        text: "Tableau"
+      - icon: linkedin
+        href: "https://www.linkedin.com/in/chanmagdalene/"
+        text: "LinkedIn"
+      - icon: envelope-fill
+        href: "mailto:jwchan.2021@mitb.smu.edu.sg"
+        text: "Email"  
+
+    style: "docked"
+    search: true
+    collapse-level: 1
+    contents:
+      - section: "Take-Home Exercise"
+        contents:
+          - href: "Take_home_ex/Take_home_ex01/Take_home_ex01.html"
+            text: "Take Home Exercise 1"
+          - href: "Take_home_ex/Take_home_ex02/Take_home_ex02.html"
+            text: "Take Home Exercise 2"
+          - href: "Take_home_ex/Take_home_ex03/Take_home_ex03.html"
+            text: "Take Home Exercise 3"
+          - href: "Take_home_ex/Take_home_ex04/Take_home_ex04.html"
+            text: "Take Home Exercise 4"
+      - section: "Hands-on Exercise"
+        contents:
+          - href: "Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html"
+            text: "Hands-on Exercise 1"
 
 format:
   html:
