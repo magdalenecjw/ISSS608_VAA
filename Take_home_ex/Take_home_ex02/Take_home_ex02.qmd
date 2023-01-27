@@ -66,7 +66,7 @@ Lastly, the age group labels are renamed and the large data labels are removed f
 
 The packages tidyverse and ggpubr will be used to remake the visualization.
 
-After the data is loaded, the age groups labels are tidied up to remove the underscores (_) and reordered in chronological order (young at bottom, elderly at top).
+After the data is loaded, the age groups labels are tidied up to remove the underscores (\_) and reordered in chronological order (young at bottom, elderly at top).
 
 ```{r}
 pacman::p_load(tidyverse)
@@ -85,7 +85,7 @@ level_order <- c("0 to 4", "5 to 9", "10 to 14", "15 to 19",
                  "80 to 84", "85 to 89", "90 and over")
 ```
 
-Next, the age-sex pyramid for the overall Singapore population is created using geom_bar. Relevant labels are also added to the chart. 
+Next, the age-sex pyramid for the overall Singapore population is created using geom_bar. Relevant labels are also added to the chart.
 
 ```{r, fig.width=12,fig.height=6}
 #Create age-sex pyramid for overall Singapore population
@@ -131,7 +131,7 @@ PA_labels <- paste(" ( Pop:",trimws(PA_pop_tab$PA_pop),")")
 appender <- function(string, suffix = PA_labels) paste0(string, suffix)
 ```
 
-Next, the age-sex pyramids for the top nine most populous planning areas are also created using a similar method used for the age-sex pyramid of the entire Singapore population created above. 
+Next, the age-sex pyramids for the top nine most populous planning areas are also created using a similar method used for the age-sex pyramid of the entire Singapore population created above.
 
 ```{r, fig.width=12,fig.height=6}
 #Create age-sex pyramids in trellis display for top 9 planning areas
