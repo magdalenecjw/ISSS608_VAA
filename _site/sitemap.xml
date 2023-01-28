@@ -1,19 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://magdalenechan-iss608.netlify.app/about.html</loc>
+    <lastmod>2023-01-28T13:50:47.203Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html</loc>
+    <lastmod>2023-01-28T13:50:55.064Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html</loc>
+    <lastmod>2023-01-28T13:50:58.133Z</lastmod>
+  </url>
+  <url>
     <loc>https://magdalenechan-iss608.netlify.app/index.html</loc>
-    <lastmod>2023-01-28T06:33:27.222Z</lastmod>
-  </url>
-  <url>
-    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex02/Take_home_ex02.html</loc>
-    <lastmod>2023-01-28T13:48:09.806Z</lastmod>
-  </url>
-  <url>
-    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex01/Take_home_ex01.html</loc>
-    <lastmod>2023-01-27T17:32:35.448Z</lastmod>
+    <lastmod>2023-01-28T13:50:58.573Z</lastmod>
   </url>
   <url>
     <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex03/In_class_ex03.html</loc>
-    <lastmod>2023-01-28T07:31:14.569Z</lastmod>
+    <lastmod>2023-01-28T13:51:03.749Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex01/Take_home_ex01.html</loc>
+    <lastmod>2023-01-28T13:51:04.367Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex02/Take_home_ex02.html</loc>
+    <lastmod>2023-01-28T13:51:11.515Z</lastmod>
   </url>
 </urlset>
