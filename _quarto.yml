@@ -10,6 +10,9 @@ website:
     pinned: true
     align: center
     tools:
+      - icon: house-fill
+        href: "https://magdalenechan-iss608.netlify.app/"
+        text: "Home"
       - icon: github
         href: "https://github.com/magdalenecjw/ISSS608_VAA"
         text: "GitHub"
@@ -41,7 +44,10 @@ website:
         contents:
           - href: "Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html"
             text: "Hands-on Exercise 1"
-
+      - section: "In-class Exercise"
+        contents:
+          - href: "In_class_ex/In_class_ex03/In_class_ex03.html"
+            text: "In-class Exercise 3"
 format:
   html:
     theme: minty
