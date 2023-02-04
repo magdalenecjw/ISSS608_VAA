@@ -44,10 +44,18 @@ website:
         contents:
           - href: "Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html"
             text: "Hands-on Exercise 1"
+          - href: "Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html"
+            text: "Hands-on Exercise 2"
+          - href: "Hands_on_ex/Hands_on_ex03/Hands_on_ex03.html"
+            text: "Hands-on Exercise 3"
+          - href: "Hands_on_ex/Hands_on_ex04/Hands_on_ex04.html"
+            text: "Hands-on Exercise 4"
       - section: "In-class Exercise"
         contents:
           - href: "In_class_ex/In_class_ex03/In_class_ex03.html"
             text: "In-class Exercise 3"
+          - href: "In_class_ex/In_class_ex04/In_class_ex04.html"
+            text: "In-class Exercise 4"            
 format:
   html:
     theme: minty
