@@ -55,7 +55,11 @@ website:
           - href: "In_class_ex/In_class_ex03/In_class_ex03.html"
             text: "In-class Exercise 3"
           - href: "In_class_ex/In_class_ex04/In_class_ex04.html"
-            text: "In-class Exercise 4"            
+            text: "In-class Exercise 4"   
+          - href: "In_class_ex/In_class_ex05/In_class_ex05.html"
+            text: "In-class Exercise 5: Correlation"               
+          - href: "In_class_ex/In_class_ex05/In_class_ex05-tern.html"
+            text: "In-class Exercise 5: Ternery"   
 format:
   html:
     theme: minty

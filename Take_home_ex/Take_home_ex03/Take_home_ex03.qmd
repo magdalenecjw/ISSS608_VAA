@@ -1,0 +1,23 @@
+---
+title: "Take Home Exercise 3"
+author: "Magdalene Chan"
+date: "15 February 2023"
+execute: 
+  warning: false
+---
+
+# Task
+
+In this Take Home Exercise, salient patterns of the resale prices of public housing property by residential towns and estates in Singapore are uncovered using analytical visualisation techniques. The focus of this exercise will be on **3-ROOM, 4-ROOM and 5-ROOM types** transacted in **2022**.
+
+# Data Source
+
+The data "*Resale flat princes based on registration date from Jan-2017 onwards*" used for this Take Home Exercise is obtained from [Data.gov.sg](https://data.gov.sg/dataset/resale-flat-prices) in csv format.
+
+# Loading Data
+
+The packages corrplot, tidyverse and ggstatsplot will be used.
+
+```{r}
+pacman::p_load(corrplot, tidyverse, ggstatsplot)
+```
