@@ -19,7 +19,7 @@ The data "*Resale flat princes based on registration date from Jan-2017 onwards*
 First, the packages and the data set is loaded.
 
 ```{r loading}
-pacman::p_load(patchwork, tidyverse, ggstatsplot, ggdist, plotly, knitr, nortest)
+pacman::p_load(patchwork, tidyverse, ggstatsplot, ggdist, gganimate, png, gifski, nortest)
 
 hdb_data <- read_csv("data/resale-flat-prices-based-on-registration-date-from-jan-2017-onwards.csv")
 
@@ -30,7 +30,7 @@ It can be seen that the column "month" is shown as a string rather than as dates
 
 As there are a total of 26 towns, the towns will also be grouped into [5 main regions](https://www.ura.gov.sg/Corporate/Planning/Master-Plan/Regional-Highlights), namely "North", "North East", "East", "Central" and "West".
 
-Likewise, there are too many storey range categories as the storeys were coded in groups of 3 storeys. We will recode this variable into groups of 9 storeys up until 27 storey, before grouping them as 28 storey and higher (since most HDB apartment blocks are [built with 30 floors and less](https://www.propertyguru.com.sg/property-guides/tallest-hdb-flats-50281)).
+Likewise, there are too many floor range categories as the floor levels were coded in groups of 3 floors. We will recode this variable into groups of 9 floors, up until the 27th floor, before grouping them as 28 floors and higher (since most HDB apartment blocks are [built with 30 floors and less](https://www.propertyguru.com.sg/property-guides/tallest-hdb-flats-50281)).
 
 Since the focus of this analysis is only on transactions that happened in 2022 and for 3-room, 4-room and 5-room HDB flats, we will also need to filter the data accordingly. Lastly, we will also drop columns which we do not need (e.g. "block", "street name") for the analysis.
 
@@ -42,7 +42,8 @@ hdb_data_cleaned <- hdb_data %>%
   mutate(trans_date = as.Date(paste0(month,"-01"))) %>%
   mutate(remaining_lease = as.integer(str_extract(remaining_lease, "[0-9]+")) +
            ifelse(is.na(str_extract(remaining_lease, " [0-9]+")), 0, 
-                  as.integer(str_extract(remaining_lease," [0-9]+"))/12))
+                  as.integer(str_extract(remaining_lease," [0-9]+"))/12)) %>%
+  mutate(month = as.integer(str_extract(string=month, pattern="([0-9]+)-([0-9]+)", group=2)))
 
 #Add Region
 hdb_data_cleaned$region <- case_when(
@@ -69,7 +70,7 @@ hdb_2022 <- hdb_data_cleaned %>%
   filter(between(trans_date, as.Date("2022-01-01"), as.Date("2022-12-31"))) %>%
   filter(flat_type %in% c("3 ROOM", "4 ROOM", "5 ROOM")) %>%
   select("town", "region", "flat_type", "storey_recoded", "floor_area_sqm", 
-         "remaining_lease", "resale_price", "trans_date")
+         "remaining_lease", "resale_price", "trans_date", "month")
 ```
 
 # Distribution of Resale Prices across Regions and Towns
@@ -598,10 +599,49 @@ In the North region, as p-value is greater than the critical value of 0.05 acros
 
 -   **With the exception of the North region, resale prices increase significantly as floor level increases.**
 
+## Median Resale Price over Time
+
+Lastly, we will plot an animated graph to observe how the median resale price in each town has changed over the course of the year.
+
+```{r resale-ani, fig.width=12,fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+hdb_stats <- hdb_2022 %>%
+  group_by(town, month) %>%
+  mutate(transaction_n = n()) %>%
+  mutate(median_price = median(resale_price)) %>%
+  select(town, region, transaction_n, median_price, month) %>%
+  distinct() %>%
+  arrange(town)
+
+ggplot(hdb_stats, aes(x = town, y = median_price, 
+                      size = transaction_n, 
+                      colour = region)) +
+  geom_point(alpha = 0.7, show.legend = T) +
+  scale_size(range = c(2, 12)) +
+  labs(title = "Median Resale Price by Town over time (2022)",
+       subtitle = "Month: 2022-{as.integer(frame_time)}", 
+       x = "Town", y = "Resale Price (SGD)",
+       size = "No. of Transactions", colour = "Region") +
+  transition_time(month) +
+  ease_aes('linear') + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5),
+        title = element_text(size = 18)) + 
+  scale_y_continuous(limits = c(250000,1000000))
+```
+
+-   **With the exception of towns in the Central Region, the median resale price in most towns generally remains relatively constant or increases at a very slow rate over the months.**
+
+-   **The drastic fluctuations observed in Bukit Timah and Central Area are likely due to the very small number of transactions in these towns.**
+
+-   **Clementi and Marine Parade are two other towns which also appear to have relatively large fluctuations over the months.**
+
+For future work, transactions over a longer period of time (e.g. 4-5 years) can be studied to investigate if seasonality affects resale prices. 
+
 # Conclusion
 
 From this piece of analysis, we can conclude that in general, there is a difference in median resale price across regions - highest in the Central region and lowest in the North. Except in the Central region, there are also differences in median resale price between towns in each region. In the West, the exception is between (1) Bukit-Batok and Jurong West, and (2) Choa Chu Kang and Clementi where there is no difference in price. Meanwhile within the Central Region, there is no difference in median resale price across most towns except Geylang (lowest within Central Region), Toa Payoh and Marine Parade.
 
 It is also observed that towns in the North and East regions have lower uncertainties while towns in the Central have the highest uncertainties. This suggests large presence of outliers in the Central Region or more varied flat types or models, while the reverse is true for flats in the North and East regions.
 
-When we look into the factors affecting resale price, unsurprisingly, flat type and floor area have similar level of impact on resale prices across all regions. Remaining lease has a stronger influence on resale prices in the Central region, but the effect is less pronounced for the other regions (moderate positive correlation). Floor level also affects resale prices in all regions except the North. 
+When we look into the factors affecting resale price, unsurprisingly, flat type and floor area have similar level of impact on resale prices across all regions. Remaining lease has a stronger influence on resale prices in the Central region, but the effect is less pronounced for the other regions (moderate positive correlation). Floor level also affects resale prices in all regions except the North.
