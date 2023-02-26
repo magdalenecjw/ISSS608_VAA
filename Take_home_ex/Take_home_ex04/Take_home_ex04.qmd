@@ -348,7 +348,7 @@ ggplot(data = trade_country_20) +
 
 ## Slope Graph
 
-```{r slope, fig.width=6, fig.height=12}
+```{r slope, fig.width=8, fig.height=12}
 #| code-fold: true
 #| code-summary: "Show code"
 
