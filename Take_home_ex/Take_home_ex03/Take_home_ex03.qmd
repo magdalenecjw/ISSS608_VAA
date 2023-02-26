@@ -636,7 +636,7 @@ ggplot(hdb_stats, aes(x = town, y = median_price,
 
 -   **Clementi and Marine Parade are two other towns which also appear to have relatively large fluctuations over the months.**
 
-For future work, transactions over a longer period of time (e.g. 4-5 years) can be studied to investigate if seasonality affects resale prices. 
+For future work, transactions over a longer period of time (e.g. 4-5 years) can be studied to investigate if seasonality affects resale prices.
 
 # Conclusion
 

@@ -348,7 +348,7 @@ ggplot(data = trade_country_20) +
 
 ## Slope Graph
 
-```{r slope, fig.width=8, fig.height=12}
+```{r slope, fig.width=9, fig.height=12}
 #| code-fold: true
 #| code-summary: "Show code"
 
@@ -386,7 +386,7 @@ ggplot(data = trade_country_final |>
   scale_size(range = c(1,10), name = "Total Trade Volume") + 
   labs(title = "Changes in Singapore's Merchandise Trade over time",
        subtitle = "Date: {format(frame_time,'%b-%y')}", 
-       x = "Import (Thousand Dollars)", y = "Export (Thousand Dollars)",
+       x = "Import (In Millions)", y = "Export (In Millions)",
        colour = "Continent")  +   
   geom_label(aes(label = Country, group = Country), size = 3, 
              hjust = 0, vjust = 0, nudge_x = 1, nudge_y = 1) +
