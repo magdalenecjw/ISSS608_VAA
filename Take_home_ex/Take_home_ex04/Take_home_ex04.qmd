@@ -1,0 +1,621 @@
+---
+title: "Take Home Exercise 4"
+author: "Magdalene Chan"
+date: "26 February 2023"
+execute: 
+  warning: false
+---
+
+# Task
+
+This Take Home Exercise aims to uncover the impact of COVID-19 as well as the global economic and political dynamic in 2022 on Singapore bi-lateral trade (i.e. Import, Export and Trade Balance) by using appropriate analytical visualisation techniques. The period of analysis for this exercise is between January 2020 to December 2022.
+
+# Data Source
+
+The data sets "*Merchandise Imports By Region/Market, Monthly*" and "*Merchandise Exports By Region/Market, Monthly*" used for this Take Home Exercise is obtained from the [Department of Statistics](https://www.singstat.gov.sg/find-data/search-by-theme/trade-and-investment/merchandise-trade/latest-data) in Microsoft Excel format.
+
+# Data Preparation
+
+First, the packages and the data set is loaded.
+
+```{r package}
+#| code-fold: true
+#| code-summary: "Show code"
+pacman::p_load(readxl, CGPfunctions, ggHoriPlot, tidyverse, data.table, patchwork,
+               knitr, ggbraid, countrycode, gganimate, RColorBrewer, ggthemes)
+
+options(scipen = 999)
+```
+
+## Loading Data Set
+
+::: panel-tabset
+## Import
+
+```{r load_import}
+import_data <- read_excel("data/outputFile.xlsx", sheet = "T1", 
+                          range = "A10:US129")
+                          
+kable(head(import_data, 15))
+```
+
+## Export
+
+```{r load_export}
+export_data <- read_excel("data/outputFile.xlsx", sheet = "T2", 
+                          range = "A10:US101")
+                          
+kable(head(export_data, 15))
+```
+:::
+
+## Data Wrangling
+
+Import and export amounts Jan 2020 to Dec 2022 are given as individual columns, which is not ideal for wrangling time series data. As such, we will use the pivot_longer function to rearrange the data.
+
+The date is also given as a string but needs to be converted into date format and separate "year" and "month" fields are created for ease of plotting charts later on.
+
+In addition, apart from the import and export amounts by country, there are also aggregated data i.e. Total import and export amount (sum of all trade partners) as well as by continent. As such, we will split the data - total and by country. Using the package countrycode, we will also map the country to its corresponding continent.
+
+Lastly, for the purpose of analysis, we will compute (i) Total Trade Volume (i.e. Imports + Exports) and (ii) Balance of Trade (i.e. Exports - Imports).
+
+```{r data_prep}
+#| code-fold: true
+#| code-summary: "Show code"
+#pivot data sets
+import_2022 <- import_data %>%
+  select('Data Series':'2020 Jan') %>% 
+  pivot_longer(
+  cols = !`Data Series`,
+  names_to = "date",
+  values_to = "import_amount") %>%
+  rename("Country" = `Data Series`)
+
+export_2022 <- export_data %>%
+  select('Data Series':'2020 Jan') %>% 
+  pivot_longer(
+  cols = !`Data Series`,
+  names_to = "date",
+  values_to = "export_amount")%>%
+  rename("Country" = `Data Series`)
+
+#remove phrase "merchandise imports/exports" in the Total rows to create a common row name that allows for both data sets to be combined
+import_2022$Country <- str_replace(import_2022$Country, "Merchandise Imports \\(Thousand Dollars\\)", "")
+export_2022$Country <- str_replace(export_2022$Country, "Merchandise Exports \\(Thousand Dollars\\)", "")
+
+#combine data sets
+trade_data <- merge(x = import_2022, y = export_2022, all = T)
+
+#format date from string format
+trade_data <- trade_data %>%
+  mutate(date = as.Date(paste0(as.integer(str_extract(date, "[0-9]{4}")), 
+                               "-", match(str_extract(date, "[A-Za-z]{3}"), 
+                                          month.abb), "-01"))) %>%
+  arrange(Country, desc(date))
+
+#filter data set into "Total", "By Continent", "By Country"
+trade_total <- trade_data %>%
+  filter(str_detect(Country, "Total")) %>%
+  #compute total trade volume
+  mutate(total_amount = export_amount + import_amount) %>%
+  #compute balance of trade
+  mutate(BOT = export_amount - import_amount)
+
+trade_country <- trade_data %>%
+  #exclude total
+  filter(!(str_detect(Country, "Total"))) %>%
+  #exclude continents
+  filter(!(str_detect(Country, "Million Dollars"))) %>%
+  #exclude Commonwealth states
+  filter(!str_detect(Country, "Commonwealth Of Independent States")) %>%
+  mutate(import_amount = replace_na(import_amount,0)) %>%
+  mutate(export_amount = replace_na(export_amount,0)) %>%
+  #remove phrase "(Thousand Dollars)" from `Data Series`
+  mutate(Country = str_trim(str_replace_all(Country, "\\(Thousand Dollars\\)",
+                                            ""))) %>%
+  #compute total trade volume
+  mutate(total_amount = export_amount + import_amount) %>%
+  #compute balance of trade
+  mutate(BOT = export_amount - import_amount)
+
+#remove countries with no trade amounts between 2020-2022
+trade_country_sum <- trade_country %>%
+  group_by(Country) %>%
+  summarise_at(.vars = vars(import_amount, export_amount),
+               .funs = c(sum = "sum")) %>%
+  filter(import_amount_sum == 0 & export_amount_sum == 0)
+
+trade_country_final <- trade_country %>%
+  filter(!(Country %in% trade_country_sum$Country)) %>%
+  #standardise country names
+  mutate(Country = str_trim(str_extract(string = Country, pattern = 
+                                        "([0-9a-zA-Z\\s]+)(,[0-9a-zA-Z\\s]+)*",
+                                      group = 1)))
+
+#create new year and month fields
+trade_total$month <- month(trade_total$date)
+trade_total$year <- year(trade_total$date)
+
+trade_country_final$month <- month(trade_country_final$date)
+trade_country_final$year <- year(trade_country_final$date)
+
+#map country to continent
+trade_country_final$continent <- countrycode(sourcevar=trade_country_final$Country,
+                                             origin = "country.name",
+                                             destination = "continent")
+
+#map countries that have not been mapped based on the warning message
+trade_country_final$continent[trade_country_final$Country == "Cocos"] <- "Oceania"
+trade_country_final$continent[trade_country_final$Country == "Micronesia"] <- "Oceania"
+trade_country_final$continent[trade_country_final$Country == "Other Countries In Oceania"] <- "Oceania"
+trade_country_final$continent[trade_country_final$Country == "Other Countries In America"] <- "Americas"
+trade_country_final$continent[trade_country_final$Country == "French Southern Territories"] <- "Antarctica"
+
+```
+
+# Current Merchandise Trade Situation of Singapore
+
+## Visualising Changes in Singapore's Merchandise Trade between 2020 and 2022
+
+We will start by taking a look at how Singapore's Merchandise Trade has changed by plotting a line graph of the export and import amounts between 2020 and 2022.
+
+```{r line_total, fig.width=12, fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+
+trade_total_long <- trade_total %>%
+  select(!BOT) %>%
+  pivot_longer(
+    cols = c(import_amount, export_amount),
+    names_to = "trade_type",
+    values_to = "amount")
+
+ggplot() +
+  geom_line(data = trade_total_long, aes(x = date, y = amount/1000, 
+                                         group = trade_type, color = trade_type),
+            linewidth = 1.2) +
+  geom_braid(data = trade_total, aes(x = date, ymin = import_amount/1000, 
+                                     ymax = export_amount/1000,
+                                     fill = import_amount/1000 <
+                                       export_amount/1000),
+             alpha = 0.5) + 
+  geom_vline(aes(xintercept = as.Date("2020-04-01")), col="grey", 
+             linetype = "dashed", linewidth=1) +
+  geom_vline(aes(xintercept = as.Date("2020-06-01")), col="grey", 
+             linetype = "dashed", linewidth=1) +
+  annotate("text", x=as.Date("2020-05-01"), y=65000, 
+           label="Circuit Breaker", size=3) + 
+  geom_vline(aes(xintercept = as.Date("2021-05-01")), col="grey", 
+             linetype = "dashed", linewidth=1) +
+  geom_vline(aes(xintercept = as.Date("2021-08-01")), col="grey", 
+             linetype = "dashed", linewidth=1) +
+  annotate("text", x=as.Date("2021-06-15"), y=65000, 
+           label="2 Rounds of COVID-19 lock-downs", size=3) + 
+  geom_vline(aes(xintercept = as.Date("2022-02-01")), col="grey", 
+             linetype = "dashed", linewidth=1) +
+  annotate("text", x=as.Date("2022-02-05"), y=65000, 
+           label="2022 Russian invasion of Ukraine", size=3, hjust = 0) + 
+  scale_color_manual(values = c("steelblue", "lightcoral"), guide = "none") + 
+  scale_fill_manual(values = c("steelblue", "lightcoral"), guide = "none") + 
+  labs(title = "Singapore's Total Merchandise Trade (2020-2022)",
+       x = "", y = "Amount (In Millions)", color = "Values") + 
+  annotate("text", x=as.Date("2023-01-05"), y=55001, label="Export", 
+           size=5, colour = "steelblue", fontface = "bold") + 
+  annotate("text", x=as.Date("2023-01-05"), y=49870, label="Import", 
+           size=5, colour = "lightcoral", fontface = "bold") + 
+  theme(title = element_text(size = 18), axis.title = element_text(size = 12))
+```
+
+-   **Between 2020 to 2022, Singapore has been experiencing trade surplus. There is also a general upward trend in Singapore's trade activities.**
+
+-   **Trade activities were at its lowest in the midst of circuit breaker measures, and dipped during the two COVID-19 related lock-downs in 2021 as well as in February 2022 at the start of the Russian invasion of Ukraine.**
+
+-   **In 2022, trade activities peaked in June but has been on a decline since then, which is reflective of the slowing growth in the global economy due to factors such as rising interest rates and inflation.**
+
+We can also use a cycle plot to inspect whether there are any seasonality trends.
+
+```{r cycle_total, fig.width=12, fig.height=9}
+#| code-fold: true
+#| code-summary: "Show code"
+
+cycle_color <- c("Balance" = "ivory4", "Import" = "lightcoral", 
+                 "Export" = "steelblue")
+
+h_balance <- trade_total %>%
+  group_by(month) %>%
+  summarise(avg = mean(BOT))
+  
+c_balance <- ggplot() + 
+  geom_line(data = trade_total, aes(x = year, y = BOT/1000, group = month, 
+                                    colour = "Balance")) + 
+  geom_hline(aes(yintercept = avg/1000, colour = "Balance"), data = h_balance,
+             linetype = 6, size = 0.5) + 
+  facet_grid(~month) + 
+  scale_color_manual(name = "", values = cycle_color) +   
+  labs(x = "", y = "Amount (In Millions)", title = "Trade Balance") + 
+  theme(axis.text.x = element_blank(), axis.ticks.x = element_blank())    
+
+h_import <- trade_total %>%
+  group_by(month) %>%
+  summarise(avg = mean(import_amount))
+
+h_export <- trade_total %>%
+  group_by(month) %>%
+  summarise(avg = mean(export_amount))
+
+c_total <- ggplot() + 
+  geom_line(data = trade_total, 
+            aes(x = year, y = import_amount/1000, group = month, 
+                colour = "Import")) + 
+  geom_hline(aes(yintercept = avg/1000, colour = "Import"), data = h_import, 
+             linetype = 6, size = 0.5) + 
+  geom_line(data = trade_total, 
+            aes(x = year, y = export_amount/1000, group = month, 
+                colour = "Export")) + 
+  geom_hline(aes(yintercept = avg/1000, colour = "Export"), data = h_export, 
+             linetype = 6, size = 0.5) +   
+  facet_grid(~month) + 
+  scale_color_manual(name = "", values = cycle_color) + 
+  labs(x = "", y = "Amount (In Millions)", 
+       title = "Import & Export Amount") + 
+  scale_x_continuous(limits = c(2020,2022), breaks = seq(2020,2023,1)) + 
+  theme(axis.text.x = element_text(angle = 90, vjust = 1, hjust=-0.1))
+
+p <- c_balance / c_total
+
+p + plot_annotation(title = "Exploring Seasonality Trends in Singapore's Total Merchandise Trade", theme = theme(plot.title = element_text(size = 18)))
+
+```
+
+-   **Except for the months of November and December, trade activity levels have generally increased over the 3-year study period. However, the rate of increase differs across months, resulting in the downward trend in trade balance for some months.**
+
+-   **While no distinctive seasonality pattern is observed, in general, trade activities appear to be lower in the months of January and February.**
+
+## Visualising Changes in Singapore's Merchandise Trade for top 20 Trade Partners
+
+Next, we will look how trade activities have changed over this period for top trade partners.
+
+::: panel-tabset
+## Line Chart Trellis Plot
+
+```{r line_country, fig.width=12, fig.height=9}
+#| code-fold: true
+#| code-summary: "Show code"
+
+#identify the top 20 trade partners by total trade volume since 2020
+trade_top20 <- trade_country_final %>%
+  group_by(Country) %>%
+  summarise(sum = sum(total_amount)) %>%
+  top_n(n=20) %>%
+  arrange(desc(sum))
+
+#filter by country
+trade_country_20 <- trade_country_final %>%
+  filter(Country %in% trade_top20$Country) %>%
+  mutate(Country = factor(Country, level = trade_top20$Country))
+
+trade_country_long <- trade_country_final %>%
+  select(!BOT) %>%
+  group_by(Country) %>%
+  pivot_longer(
+    cols = c(import_amount, export_amount),
+    names_to = "trade_type",
+    values_to = "amount") %>%
+  ungroup() %>%
+  filter(Country %in% trade_country_20$Country) %>%
+  mutate(Country = factor(Country, level = trade_top20$Country))  
+
+ggplot() +
+  geom_line(data = trade_country_long, aes(x = date, y = amount/1000, 
+                                         group = trade_type, color = trade_type),
+            linewidth = 1.2) +
+  geom_braid(data = trade_country_20, 
+             aes(x = date, ymin = import_amount/1000, ymax = export_amount/1000,
+                 fill = import_amount/1000 > export_amount/1000),
+             alpha = 0.5) + 
+  scale_color_manual(name = "Trade Type", values = c("steelblue","lightcoral"),
+                     labels = c("Export", "Import")) + 
+  scale_fill_manual(values = c("steelblue", "lightcoral"), guide = "none") + 
+  labs(title = "Singapore's Merchandise Trade with Top 20 Trade Partners", 
+       subtitle = "From Jan 2020 to Dec 2022",
+       x = "", y = "Amount (In Millions)", color = "Values") + 
+  facet_wrap(vars(Country), nrow = 5) + 
+  theme(title = element_text(size = 18), axis.title = element_text(size = 12), 
+        axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=-0.1),
+        legend.position="bottom", legend.title=element_text(size=12))
+```
+
+## Horizon Plot
+
+```{r horizon_country, fig.width=6, fig.height=9}
+#| code-fold: true
+#| code-summary: "Show code"
+
+ggplot(data = trade_country_20) +
+  geom_horizon(aes(x = date, y = BOT), origin = 0, show.legend = F) + 
+  facet_grid(Country~.) +
+  theme_minimal() + 
+  scale_fill_hcl(palette = "RdBu") + 
+  theme(panel.spacing.y = unit(0, "lines"), 
+        strip.text.y = element_text(size = 5, angle = 0, hjust = 0),
+        axis.text.y = element_blank(), axis.text.x = element_text(size = 7),
+        axis.title = element_blank(), axis.ticks.y = element_blank(),
+        panel.border = element_blank()) + 
+  scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
+  labs(title = "Trade Balance between Singapore and Trade Partners", 
+       subtitle = "From Jan 2020 to Dec 2022")
+```
+
+## Slope Graph
+
+```{r slope, fig.width=6, fig.height=12}
+#| code-fold: true
+#| code-summary: "Show code"
+
+trade_country_final %>%
+  mutate(year = factor(year)) %>%
+  filter(year %in% c(2020,2022)) %>%
+  filter(month == 12) %>%
+  filter(Country %in% trade_country_20$Country) %>%
+  mutate(BOT_new = round(BOT/1000,0)) %>%
+  newggslopegraph(year, BOT_new, Country,
+                  Title = "Trade Balance with Top Trade Partners as at Dec 2020 & Dec 2022",
+                  SubTitle = "Amount (In Millions)",
+                  Caption = NULL)
+
+```
+:::
+
+-   **From the above three charts, we can see that over the 3-year period, Singapore has consistently enjoyed a trade surplus with Hong Kong, Indonesia, Thailand, Vietnam, Australia, India and the Netherlands. The reverse is true (in the form of a trade deficit) with Malaysia, Taiwan, Germany, UAE, France, Switzerland, UK and Saudi Arabia.**
+
+-   **Since COVID-19 measures were introduced, Singapore has been enjoying a trade surplus with Mainland China, but as of Q2 2022, this has shifted into a trade deficit.**
+
+We can also visualise the changes in trade activities for major partners as an animated plot.
+
+```{r animate, fig.width=12, fig.height=9}
+#| code-fold: true
+#| code-summary: "Show code"
+
+ggplot(data = trade_country_final |> 
+         filter(Country %in% trade_country_20$Country), 
+       aes(x = import_amount/1000, y = export_amount/1000, 
+           size = total_amount/1000, colour = continent)) +
+  geom_abline(intercept = 0, slope = 1, linewidth = 0.5, linetype = "dashed",
+              colour = 'lightgrey') + 
+  geom_point(alpha = 0.7, show.legend = T) +
+  scale_size(range = c(1,10), name = "Total Trade Volume") + 
+  labs(title = "Changes in Singapore's Merchandise Trade over time",
+       subtitle = "Date: {format(frame_time,'%b-%y')}", 
+       x = "Import (Thousand Dollars)", y = "Export (Thousand Dollars)",
+       colour = "Continent")  +   
+  geom_label(aes(label = Country, group = Country), size = 3, 
+             hjust = 0, vjust = 0, nudge_x = 1, nudge_y = 1) +
+  scale_color_brewer(palette = "Set2") +
+  scale_x_continuous(limits = c(0,8000)) +
+  scale_y_continuous(limits = c(0,8000)) +   
+  transition_time(date) +
+  ease_aes('linear') + 
+  theme(title = element_text(size = 18))
+```
+
+We will also check whether there are any seasonality trends in trade activities with major trade partners by using a function to create cycle plots for each of the top 10 major trade partners.
+
+```{r cycleplot_function}
+#| code-fold: true
+#| code-summary: "Show code"
+
+cycle_plot <- function(country){
+  h_import <- trade_country_final %>%
+    filter(Country == country) %>%
+    group_by(month) %>%
+    summarise(avg = mean(import_amount))
+
+  h_export <- trade_country_final %>%
+    filter(Country == country) %>%
+    group_by(month) %>%
+    summarise(avg = mean(export_amount))
+
+  ggplot() + 
+    geom_line(data = trade_country_final |> filter(Country == country), 
+              aes(x = year, y = import_amount/1000, group = month, 
+                  colour = "Import")) + 
+    geom_hline(aes(yintercept = avg/1000, colour = "Import"), data = h_import, 
+               linetype = 6, size = 0.5) + 
+    geom_line(data = trade_country_final |> filter(Country == country), 
+              aes(x = year, y = export_amount/1000, group = month, 
+                  colour = "Export")) + 
+    geom_hline(aes(yintercept = avg/1000, colour = "Export"), data = h_export, 
+               linetype = 6, size = 0.5) + 
+    facet_grid(~month) + 
+    scale_color_manual(name = "", values = c("Import" = "firebrick", 
+                                             "Export" = "steelblue")) +
+    labs(x = "", y = "Amount (In Millions)", 
+         title = paste0("Cycle Plot for ",country)) + 
+    scale_x_continuous(limits = c(2020,2022), breaks = seq(2020,2023,1)) + 
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=-0.1))
+}
+```
+
+::: panel-tabset
+## 1. Mainland China
+
+```{r cycleplot_china, fig.width=12, fig.height=6}
+cycle_plot("Mainland China")
+```
+
+## 2. Malaysia
+
+```{r cycleplot_mal, fig.width=12, fig.height=6}
+cycle_plot("Malaysia")
+```
+
+## 3. United States
+
+```{r cycleplot_us, fig.width=12, fig.height=6}
+cycle_plot("United States")
+```
+
+## 4. Taiwan
+
+```{r cycleplot_tw, fig.width=12, fig.height=6}
+cycle_plot("Taiwan")
+```
+
+## 5. Hong Kong
+
+```{r cycleplot_hk, fig.width=12, fig.height=6}
+cycle_plot("Hong Kong")
+```
+
+## 6. Indonesia
+
+```{r cycleplot_indo, fig.width=12, fig.height=6}
+cycle_plot("Indonesia")
+```
+
+## 7. Korea
+
+```{r cycleplot_kr, fig.width=12, fig.height=6}
+cycle_plot("Republic Of Korea")
+```
+
+## 8. Japan
+
+```{r cycleplot_jp, fig.width=12, fig.height=6}
+cycle_plot("Japan")
+```
+
+## 9. Thailand
+
+```{r cycleplot_th, fig.width=12, fig.height=6}
+cycle_plot("Thailand")
+```
+
+## 10. Vietnam
+
+```{r cycleplot_vn, fig.width=12, fig.height=6}
+cycle_plot("Vietnam")
+```
+:::
+
+-   **Similar to the overall trend, there does no appear to be any distinctive seasonality pattern observed.**
+
+-   **The lower level of trade activities observed for January and February appears to be mainly driven by the top 3 trade partners - Mainland China, Malaysia and the United States.**
+
+Lastly, we can have a quick overall view of how Singapore's Merchandise Trade compares across the top Asian and European Trade Partners by using a function to create line charts in trellis plots and horizon plots.
+
+### Top Asian Trade Partners
+
+::: panel-tabset
+## Line Chart Trellis Plot
+
+```{r line_continent, fig.width=9, fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+
+line_plot_filter <- function(a){
+  trade_filter <- trade_country_final %>%
+    filter(continent == a) %>%
+    group_by(Country) %>%
+    summarise(sum = sum(total_amount)) %>%
+    top_n(10) %>%
+    arrange(desc(sum))
+  
+  #filter by country
+  trade_country_filter <- trade_country_final %>%
+    filter(Country %in% trade_filter$Country) %>%
+    mutate(Country = factor(Country, level = trade_filter$Country))
+  
+  trade_country_long <- trade_country_final %>%
+    select(!BOT) %>%
+    group_by(Country) %>%
+    pivot_longer(
+      cols = c(import_amount, export_amount),
+      names_to = "trade_type",
+      values_to = "amount") %>%
+    ungroup() %>%
+    filter(Country %in% trade_filter$Country) %>%
+    mutate(Country = factor(Country, level = trade_filter$Country))  
+  
+  ggplot() +
+    geom_line(data = trade_country_long, aes(x = date, y = amount/1000, 
+                                           group = trade_type, color = trade_type),
+              linewidth = 1.2) +
+    geom_braid(data = trade_country_filter, 
+               aes(x = date, ymin = import_amount/1000, ymax = export_amount/1000,
+                   fill = import_amount/1000 > export_amount/1000),
+               alpha = 0.5) + 
+    scale_color_manual(name = "Trade Type", values = c("steelblue","lightcoral"),
+                       labels = c("Export", "Import")) + 
+    scale_fill_manual(values = c("steelblue", "lightcoral"), guide = "none") + 
+    labs(title = paste0("Singapore's Merchandise Trade with ", a, " (top 10)"), 
+         subtitle = "From Jan 2020 to Dec 2022",
+         x = "", y = "Amount (In Millions)", color = "Values") + 
+    facet_wrap(vars(Country), ncol = 5) + 
+    theme(title = element_text(size = 18), axis.title = element_text(size = 12), 
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=-0.1),
+          legend.position="bottom", legend.title=element_text(size=12)) 
+}
+
+line_plot_filter("Asia")
+```
+
+## Horizon Plot
+
+```{r horizon_continent, fig.width=6, fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+
+horizon_plot_filter <- function(a){
+  trade_filter <- trade_country_final %>%
+    filter(continent == a) %>%
+    group_by(Country) %>%
+    summarise(sum = sum(total_amount)) %>%
+    top_n(10) %>%
+    arrange(desc(sum))
+  
+  #filter by country
+  trade_country_filter <- trade_country_final %>%
+    filter(Country %in% trade_filter$Country) %>%
+    mutate(Country = factor(Country, level = trade_filter$Country))
+  
+  ggplot(data = trade_country_filter) +
+    geom_horizon(aes(x = date, y = BOT), origin = 0, show.legend = F) + 
+    facet_grid(Country~.) +
+    theme_minimal() + 
+    scale_fill_hcl(palette = "RdBu") + 
+    theme(panel.spacing.y = unit(0, "lines"), 
+          strip.text.y = element_text(size = 5, angle = 0, hjust = 0),
+          axis.text.y = element_blank(), axis.text.x = element_text(size = 7),
+          axis.title = element_blank(), axis.ticks.y = element_blank(),
+          panel.border = element_blank()) + 
+    scale_x_date(expand=c(0,0), date_breaks = "3 month", date_labels = "%b%y") + 
+    labs(title = paste0("Trade Balance between Singapore and ",a), 
+         subtitle = "From Jan 2020 to Dec 2022")
+}
+
+horizon_plot_filter("Asia")
+```
+:::
+
+### Top European Trade Partners
+
+::: panel-tabset
+## Line Chart Trellis Plot
+
+```{r line_eu, fig.width=9, fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+
+line_plot_filter("Europe")
+```
+
+## Horizon Plot
+
+```{r horizon_eu, fig.width=6, fig.height=6}
+#| code-fold: true
+#| code-summary: "Show code"
+
+horizon_plot_filter("Europe")
+```
+:::
