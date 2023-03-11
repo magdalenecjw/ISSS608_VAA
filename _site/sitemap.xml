@@ -1,7 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://magdalenechan-iss608.netlify.app/about.html</loc>
+    <lastmod>2023-03-11T07:32:43.828Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Hands_on_ex/Hands_on_ex01/Hands_on_ex01.html</loc>
+    <lastmod>2023-03-11T07:32:49.893Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Hands_on_ex/Hands_on_ex02/Hands_on_ex02.html</loc>
+    <lastmod>2023-03-11T07:32:52.343Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Hands_on_ex/Hands_on_ex03/Hands_on_ex03.html</loc>
+    <lastmod>2023-03-11T07:32:52.671Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/index.html</loc>
+    <lastmod>2023-03-11T07:32:53.002Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex03/In_class_ex03.html</loc>
+    <lastmod>2023-03-11T07:32:57.629Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex04/In_class_ex04.html</loc>
+    <lastmod>2023-03-11T07:33:11.351Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex05/In_class_ex05-tern.html</loc>
+    <lastmod>2023-03-11T07:33:15.987Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex05/In_class_ex05.html</loc>
+    <lastmod>2023-03-11T07:33:39.907Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/In_class_ex/In_class_ex08/In_class_ex08.html</loc>
+    <lastmod>2023-03-11T07:34:17.382Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex01/Take_home_ex01.html</loc>
+    <lastmod>2023-03-11T07:34:17.927Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex02/Take_home_ex02.html</loc>
+    <lastmod>2023-03-11T07:34:24.004Z</lastmod>
+  </url>
+  <url>
+    <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex03/Take_home_ex03.html</loc>
+    <lastmod>2023-03-11T07:37:13.986Z</lastmod>
+  </url>
+  <url>
     <loc>https://magdalenechan-iss608.netlify.app/Take_home_ex/Take_home_ex04/Take_home_ex04.html</loc>
-    <lastmod>2023-02-26T14:20:27.026Z</lastmod>
+    <lastmod>2023-03-11T07:39:56.058Z</lastmod>
   </url>
 </urlset>

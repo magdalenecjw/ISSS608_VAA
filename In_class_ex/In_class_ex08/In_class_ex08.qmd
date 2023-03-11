@@ -1,0 +1,236 @@
+---
+title: "In-class Exercise 8"
+author: "Magdalene Chan"
+date: "11 March 2023"
+date-modified: "`r Sys.Date()`"
+execute: 
+  echo: true
+  eval: true
+  warning: false
+format: html
+editor: visual
+---
+
+# Loading Packages & Data
+
+```{r}
+#| code-fold: true
+#| code-summary: "Load packages"
+pacman::p_load(igraph, tidygraph, ggraph, visNetwork, lubridate, clock,
+               tidyverse, graphlayouts)
+```
+
+```{r}
+#| code-fold: true
+#| code-summary: "Load data"
+GAStech_nodes <- read_csv("data/GAStech_email_node.csv")
+GAStech_edges <- read_csv("data/GAStech_email_edge-v2.csv")
+
+glimpse(GAStech_edges)
+```
+
+The SentDate column is updated from string format to date format.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+GAStech_edges <- GAStech_edges %>%
+  mutate(SentDate = dmy(SentDate)) %>%
+  mutate(Weekday = wday(SentDate,
+                        label = TRUE,
+                        abbr = FALSE))
+
+glimpse(GAStech_edges)
+```
+
+Individuals are aggregated by date, senders, receivers, main subject and day of the week and a new field "weight" is added based on the number of records in each aggregation.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+GAStech_edges_aggregated <- GAStech_edges %>%
+  filter(MainSubject == "Work related") %>%
+  group_by(source, target, Weekday) %>%
+    summarise(Weight = n()) %>%
+  filter(source!=target) %>%
+  filter(Weight > 1) %>%
+  ungroup()
+
+glimpse(GAStech_edges_aggregated)
+```
+
+# Plot static network graph
+
+Build a network graph data frame using **tinygraph** package.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+GAStech_graph <- tbl_graph(nodes = GAStech_nodes,
+                           edges = GAStech_edges_aggregated, 
+                           directed = TRUE)
+
+GAStech_graph
+```
+
+Rearrange the rows in the edges tibble to list those with the highest "weight" first.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+GAStech_graph %>%
+  activate(edges) %>%
+  arrange(desc(Weight))
+
+GAStech_graph
+```
+
+Plot a basic network graph based using the above network graph data frame.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+ggraph(GAStech_graph) +
+  geom_edge_link() +
+  geom_node_point()
+```
+
+We will improve on the aesthetics of the graph.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+g <- ggraph(GAStech_graph, 
+            layout = "nicely") +
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = Department), 
+                  size = 3)
+
+g + theme_graph()
+```
+
+We will look at the network graph by days of the week using a panel view. The function facet_edges() is used whereby nodes are always drawn in all panels even if the node data contains an attribute named the same as the one used for the edge facetting.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+set_graph_style() 
+
+g <- ggraph(GAStech_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = Department), 
+                  size = 2)
+  
+g + facet_edges(~Weekday) +
+  th_foreground(foreground = "grey80",  
+                border = TRUE) +
+  theme(legend.position = 'bottom')
+```
+
+We can also visualise the panel view using the function facet_nodes() whereby edges are only draw in a panel if both terminal nodes are present here.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+set_graph_style()
+
+g <- ggraph(GAStech_graph, 
+            layout = "nicely") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = Department), 
+                  size = 2)
+  
+g + facet_nodes(~Department)+
+  th_foreground(foreground = "grey80",  
+                border = TRUE) +
+  theme(legend.position = 'bottom')
+```
+
+Next we will compute the centrality indices for the network graph. As ggraph v2.0 tidygraph algorithms allows for centrality measures to be accessed directly in ggraph calls, we do not need to precompute and store derived node and edge centrality measures on the graph in order to use them in a plot.
+
+The network graph below uses the Betweenness Centrality. Betweenness centrality quantifies how many times a particular node comes in the shortest chosen path between two other nodes.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+g <- GAStech_graph %>%
+  ggraph(layout = "fr") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = Department, 
+                      size = centrality_betweenness()))
+g + theme_graph()
+```
+
+The network graph below uses the Edge betweenness Centrality. Edge betweenness centrality is defined as the number of the shortest paths that go through an edge in a graph or network.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Show code"
+g <- GAStech_graph %>%
+  mutate(community = as.factor(group_edge_betweenness(weights = Weight, directed = TRUE))) %>%
+  ggraph(layout = "fr") + 
+  geom_edge_link(aes(width=Weight), 
+                 alpha=0.2) +
+  scale_edge_width(range = c(0.1, 5)) +
+  geom_node_point(aes(colour = community))  
+
+g + theme_graph()
+```
+
+# Plot interactive network graph
+
+We will prepare a data model to plot a basic interactive network graph.
+
+```{r}
+GAStech_edges_aggregated <- GAStech_edges %>%
+  left_join(GAStech_nodes, by = c("sourceLabel" = "label")) %>%
+  rename(from = id) %>%
+  left_join(GAStech_nodes, by = c("targetLabel" = "label")) %>%
+  rename(to = id) %>%
+  filter(MainSubject == "Work related") %>%
+  group_by(from, to) %>%
+    summarise(weight = n()) %>%
+  filter(from!=to) %>%
+  filter(weight > 1) %>%
+  ungroup()
+
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") 
+```
+
+We want to colour the nodes according to the values of the group field. To prepare the data, we will rename Department field to group. visNetwork then shades the nodes by assigning unique colour to each category in the group field.
+
+```{r}
+GAStech_nodes <- GAStech_nodes %>%
+  rename(group = Department)
+
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visLegend() %>%
+  visLayout(randomSeed = 123)
+```
+
+We will incorporate furhter interactivity features using visOptions().
+- The argument highlightNearest highlights nearest when clicking a node.
+- The argument nodesIdSelection adds an id node selection creating an HTML select element.
+
+```{r}
+visNetwork(GAStech_nodes,
+           GAStech_edges_aggregated) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visOptions(highlightNearest = TRUE,
+             nodesIdSelection = TRUE) %>%
+  visLegend() %>%
+  visLayout(randomSeed = 123)
+```
