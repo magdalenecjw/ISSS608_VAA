@@ -62,6 +62,8 @@ website:
             text: "In-class Exercise 5: Ternery"   
           - href: "In_class_ex/In_class_ex08/In_class_ex08.html"
             text: "In-class Exercise 8"   
+          - href: "In_class_ex/In_class_ex09/In_class_ex09.html"
+            text: "In-class Exercise 9"   
 format:
   html:
     theme: minty
